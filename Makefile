@@ -1,4 +1,4 @@
-IMAGE?=tukkobadnyanoba/vcluster-dd-extension
+IMAGE?=tukobadnyanoba/vcluster-dd-extension
 TAG?=latest
 
 BUILDER=buildx-multi-arch

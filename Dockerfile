@@ -37,6 +37,6 @@ LABEL org.opencontainers.image.title="vcluster-dd-extension" \
 COPY --from=builder /backend/bin/service /
 COPY docker-compose.yaml .
 COPY metadata.json .
-COPY docker.svg .
+COPY vcluster.svg .
 COPY --from=client-builder /ui/build ui
 CMD /service -socket /run/guest-services/vcluster-dd-extension.sock
