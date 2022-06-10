@@ -3,16 +3,16 @@
   "vm": {
     "composefile": "docker-compose.yaml",
     "exposes": {
-      "socket": "extension-vcluster-dd-extension.sock"
+      "socket": "vcluster-dd-extension.sock"
     }
   },
   "ui": {
     "dashboard-tab": {
-      "title": "Vcluster-Dd-Extension",
+      "title": "vCluster",
       "src": "index.html",
       "root": "ui",
       "backend": {
-        "socket": "extension-vcluster-dd-extension.sock"
+        "socket": "vcluster-dd-extension.sock"
       }
     }
   }
