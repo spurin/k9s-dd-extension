@@ -1,0 +1,19 @@
+{
+  "icon": "docker.svg",
+  "vm": {
+    "composefile": "docker-compose.yaml",
+    "exposes": {
+      "socket": "extension-vcluster-dd-extension.sock"
+    }
+  },
+  "ui": {
+    "dashboard-tab": {
+      "title": "Vcluster-Dd-Extension",
+      "src": "index.html",
+      "root": "ui",
+      "backend": {
+        "socket": "extension-vcluster-dd-extension.sock"
+      }
+    }
+  }
+}
