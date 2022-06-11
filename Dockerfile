@@ -25,14 +25,14 @@ RUN npm run build
 
 FROM alpine
 LABEL org.opencontainers.image.title="vcluster-dd-extension" \
-    org.opencontainers.image.description="vcluster docker extension" \
+    org.opencontainers.image.description="vcluster Docker Extension" \
     org.opencontainers.image.vendor="Loft Inc." \
     com.docker.desktop.extension.api.version=">= 0.2.3" \
-    com.docker.extension.screenshots="" \
-    com.docker.extension.detailed-description="" \
-    com.docker.extension.publisher-url="" \
-    com.docker.extension.additional-urls="" \
-    com.docker.extension.changelog=""
+    com.docker.extension.screenshots="[{\"alt\": \"vcluster \", \"url\": \"https://www.vcluster.com/docs/media/diagrams/vcluster-architecture.svg\"}]" \
+    com.docker.extension.detailed-description="Virtual clusters run inside namespaces of other clusters. They have a separate API server and a separate data store, so every Kubernetes object you create in the vcluster only exists inside the vcluster." \
+    com.docker.extension.publisher-url="https://www.vcluster.com" \
+    com.docker.extension.additional-urls="[{\"title\":\"Loft Inc.\",\"url\":\"https:\/\/loft.sh\"}]" \
+    com.docker.extension.changelog="<p>Extension changelog<ul> <li>New feature A</li> <li>Bug fix on feature B</li></ul></p>"
 
 COPY --from=builder /backend/bin/service /
 COPY docker-compose.yaml .
