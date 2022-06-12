@@ -1,3 +1,5 @@
 services:
   vcluster-dd-extension:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    volumes:
+      - $HOME/.kube/config:/backend/.kube/config:ro
