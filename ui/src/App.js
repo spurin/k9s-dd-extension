@@ -14,31 +14,53 @@ function useDockerDesktopClient() {
 function App() {
     const [response, setResponse] = React.useState("");
     const ddClient = useDockerDesktopClient();
-    const get = async () => {
-        // const output = await ddClient.extension.host.cli.exec("kubectl", ["-h"]);
-        // console.log(output)
-        // const containers = await ddClient.docker.listContainers();
-        // console.log(containers);
-        // let execProcess = await ddClient.docker.cli.exec("run", ["-d", "nginx"], {
-        //     stream: {
-        //         onOutput(data) {
-        //             if (data.stdout) {
-        //                 console.error(data.stdout);
-        //             } else {
-        //                 console.log(data.stderr);
-        //             }
-        //         },
-        //         onError(error) {
-        //             console.error(error);
-        //         },
-        //         onClose(exitCode) {
-        //             console.log("onClose with exit code " + exitCode);
-        //         },
-        //         splitOutputLines: true,
-        //     },
-        // });
-        // console.log(execProcess)
 
+    async function createVolume() {
+        let execProcess = await ddClient.docker.cli.exec("create", ["-d", "loft-toolkit"], {
+            stream: {
+                onOutput(data) {
+                    if (data.stdout) {
+                        console.error(data.stdout);
+                    } else {
+                        console.log(data.stderr);
+                    }
+                },
+                onError(error) {
+                    console.error(error);
+                },
+                onClose(exitCode) {
+                    console.log("onClose with exit code " + exitCode);
+                },
+                splitOutputLines: true,
+            },
+        });
+        console.log(execProcess)
+    }
+
+    async function createLoftToolKitContainer() {
+        let execProcess = await ddClient.docker.cli.exec("run", ["-d", "loft-toolkit"], {
+            stream: {
+                onOutput(data) {
+                    if (data.stdout) {
+                        console.error(data.stdout);
+                    } else {
+                        console.log(data.stderr);
+                    }
+                },
+                onError(error) {
+                    console.error(error);
+                },
+                onClose(exitCode) {
+                    console.log("onClose with exit code " + exitCode);
+                },
+                splitOutputLines: true,
+            },
+        });
+        console.log(execProcess)
+    }
+
+    const get = async () => {
+        await createVolume();
         const result1 = await ddClient.extension.vm.service.get("/hello");
         console.log(result1)
         setResponse(JSON.stringify(result1));

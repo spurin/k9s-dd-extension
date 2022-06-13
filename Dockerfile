@@ -37,12 +37,8 @@ LABEL org.opencontainers.image.title="vcluster-dd-extension" \
 COPY --from=builder /backend/bin/service /
 RUN apk add curl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl  \
-    && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl  \
-    && curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster  \
-    && chmod +x vcluster && mv vcluster /usr/local/bin \
-    && curl -LO https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz \
-    && tar -xzf helm-v3.8.2-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/helm && chmod +x /usr/bin/helm
-RUN set KUBECONFIG=/backend/.kube/config
+    && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl
+
 COPY docker-compose.yaml .
 COPY metadata.json .
 COPY vcluster.svg .
