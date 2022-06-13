@@ -5,4 +5,4 @@ services:
       - DAC_OVERRIDE
       - FOWNER
     volumes:
-      - /var/lib/kubeadm:/var/lib/kubeadm
+      - /var/lib/kubeadm/admin.conf:/root/.kube/config

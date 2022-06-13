@@ -15,24 +15,24 @@ const columns: GridColDef[] = [
     {
         field: 'Created',
         headerName: 'Creation Time',
-        width: 110,
+        width: 150,
     },
     {
         field: 'AgeSeconds',
         headerName: 'Age Seconds',
         type: 'number',
-        width: 160,
+        width: 150,
     },
     {
         field: 'Status',
         headerName: 'Status',
-        width: 160,
+        width: 150,
     },
 ];
 
 export default function VClusterList(props) {
     return (
-        <div style={{height: 400, width: '100%'}}>
+        <div style={{display: 'flex', height: 400, width: '100%'}}>
             <DataGrid
                 loading={props.vClusters.length === 0}
                 getRowId={(row) => row.Name + row.Namespace}

@@ -4,7 +4,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import {DockerMuiThemeProvider} from '@docker/docker-mui-theme';
 import {createDockerDesktopClient} from '@docker/extension-api-client';
 import "./App.css";
-import {isK8sConnectionActive, listVClusters} from "./client/docker-client";
+import {createVCluster, listVClusters} from "./client/docker-client";
 import VClusterList from "./vcluster/list";
 
 const client = createDockerDesktopClient();
@@ -18,22 +18,15 @@ function App() {
     const ddClient = useDockerDesktopClient();
 
     useEffect(() => {
-        isK8sConnectionActive(ddClient)
-            .then(isAlive => {
-                if (isAlive) {
-                    listVClusters(ddClient)
-                        .then(value => setVClusters(value))
-                        .catch(reason => console.log(reason))
-                }
-            })
-            .catch(reason => console.log(reason))
-    }, []);
-
-    const resetK8sConnection = async () => {
-        await resetK8sConnection(ddClient)
-    }
-
-    const createVCluster = async () => {
+        const interval = setInterval(() => {
+            listVClusters(ddClient)
+                .then(value => setVClusters(value))
+                .catch(reason => console.log(reason))
+        }, 5000);
+        return () => clearInterval(interval);
+    }, [ddClient]);
+    const createVC = async () => {
+        await createVCluster(ddClient, "test", "default");
         // if (!await isLoftToolKitVolumeCreated(ddClient)) {
         //     await createVolume(ddClient);
         // }
@@ -49,11 +42,8 @@ function App() {
     return (<DockerMuiThemeProvider>
         <CssBaseline/>
         <div className="App">
-            <Button variant="contained" onClick={createVCluster}>
+            <Button variant="contained" onClick={createVC}>
                 Create vCluster
-            </Button>
-            <Button variant="contained" onClick={createVCluster}>
-                Disconnect K8s Cluster
             </Button>
             <hr/>
             <VClusterList vClusters={vClusters}></VClusterList>
