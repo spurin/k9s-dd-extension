@@ -16,51 +16,89 @@ function App() {
     const ddClient = useDockerDesktopClient();
 
     async function createVolume() {
-        let execProcess = await ddClient.docker.cli.exec("create", ["-d", "loft-toolkit"], {
+        await ddClient.docker.cli.exec("volume", ["create", "loft-toolkit"], {
             stream: {
                 onOutput(data) {
                     if (data.stdout) {
-                        console.error(data.stdout);
+                        console.log("[volume created] : ", data.stdout);
                     } else {
-                        console.log(data.stderr);
+                        console.error("[volume creation failed] : ", data.stderr);
                     }
+                }, onError(error) {
+                    console.error("[volume creation failed] : ", error);
                 },
-                onError(error) {
-                    console.error(error);
-                },
-                onClose(exitCode) {
-                    console.log("onClose with exit code " + exitCode);
-                },
-                splitOutputLines: true,
             },
         });
-        console.log(execProcess)
     }
 
     async function createLoftToolKitContainer() {
-        let execProcess = await ddClient.docker.cli.exec("run", ["-d", "loft-toolkit"], {
+        await ddClient.docker.cli.exec("run", ["-d", "--name", "loft-toolkit", "-v", "loft-toolkit:/root/.kube", "loft-toolkit:0.0.2"], {
             stream: {
                 onOutput(data) {
                     if (data.stdout) {
-                        console.error(data.stdout);
+                        console.log("[container created] : ", data.stdout);
                     } else {
-                        console.log(data.stderr);
+                        console.error("[container creation failed] : ", data.stderr);
                     }
-                },
-                onError(error) {
-                    console.error(error);
-                },
-                onClose(exitCode) {
-                    console.log("onClose with exit code " + exitCode);
-                },
-                splitOutputLines: true,
+                }, onError(error) {
+                    console.error("[container creation failed] : ", error);
+                }
             },
         });
-        console.log(execProcess)
+    }
+
+    async function resetK8sConnection() {
+        await deleteLoftToolKitContainer()
+        await deleteLoftToolKitVolume()
+    }
+
+    async function isLoftToolKitPodRunning() {
+        return true
+    }
+
+    async function isLoftToolKitVolumeAttached() {
+        return true
+    }
+
+    async function isK8sConnectionActive() {
+        return await isLoftToolKitPodRunning() && await isLoftToolKitVolumeAttached()
+    }
+
+    async function deleteLoftToolKitVolume() {
+        await ddClient.docker.cli.exec("volume", ["rm", "loft-toolkit", "-f"], {
+            stream: {
+                onOutput(data) {
+                    if (data.stdout) {
+                        console.log("[volume deleted] : ", data.stdout);
+                    } else {
+                        console.error("[volume deletion failed] : ", data.stderr);
+                    }
+                }, onError(error) {
+                    console.error("[volume deletion failed] : ", error);
+                }
+            },
+        });
+    }
+
+    async function deleteLoftToolKitContainer() {
+        await ddClient.docker.cli.exec("container", ["rm", "loft-toolkit", "-f"], {
+            stream: {
+                onOutput(data) {
+                    if (data.stdout) {
+                        console.log("[container deleted] : ", data.stdout);
+                    } else {
+                        console.error("[container deletion failed] : ", data.stderr);
+                    }
+                }, onError(error) {
+                    console.error("[container deletion failed] : ", error);
+                }
+            },
+        });
     }
 
     const get = async () => {
         await createVolume();
+        await createLoftToolKitContainer();
         const result1 = await ddClient.extension.vm.service.get("/hello");
         console.log(result1)
         setResponse(JSON.stringify(result1));

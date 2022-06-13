@@ -6,5 +6,6 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
     && chmod +x vcluster && mv vcluster /usr/local/bin \
     && curl -LO https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz \
     && tar -xzf helm-v3.8.2-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/helm && chmod +x /usr/bin/helm
+RUN mkdir /root/.kube
 ENV KUBECONFIG=/root/.kube/config
 ENTRYPOINT ["/bin/sh", "-c", "sleep 9999999"]
