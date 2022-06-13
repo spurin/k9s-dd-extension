@@ -1,3 +1,8 @@
 services:
   vcluster-dd-extension:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    cap_add:
+      - DAC_OVERRIDE
+      - FOWNER
+    volumes:
+      - /var/lib/kubeadm:/var/lib/kubeadm
