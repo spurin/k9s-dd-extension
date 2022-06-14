@@ -2,27 +2,11 @@ package main
 
 import (
 	"flag"
-	"fmt"
 	"github.com/labstack/echo"
 	"log"
 	"net"
 	"net/http"
 	"os"
-)
-
-type (
-	VCluster struct {
-		Name      string `json:"name"`
-		Namespace string `json:"namespace"`
-	}
-)
-
-var (
-	vClusters = map[string]*VCluster{}
-
-	// kubernetes in DD
-	// kubeconfig
-	count = 0
 )
 
 func main() {
@@ -47,39 +31,8 @@ func main() {
 	router.Listener = ln
 
 	router.GET("/hello", hello)
-	//router.GET("/vClusters", getAllVClusters)
-	//router.GET("/vClusters/:id", getVCluster)
-	router.POST("/vClusters", createVCluster)
-	//router.DELETE("/vClusters/:id", deleteVCluster)
 
 	log.Fatal(router.Start(startURL))
-}
-
-func getVCluster(ctx echo.Context) error {
-	name := ctx.Param("name")
-
-	return ctx.JSON(http.StatusOK, vClusters[name])
-}
-
-func getAllVClusters(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, vClusters)
-}
-
-func createVCluster(ctx echo.Context) error {
-	log.Println("count")
-	vCluster := &VCluster{}
-	if err := ctx.Bind(vCluster); err != nil {
-		return err
-	}
-	vClusters[vCluster.Name] = vCluster
-	fmt.Println("vCluster : ", vCluster)
-	return ctx.JSON(http.StatusCreated, vCluster)
-}
-
-func deleteVCluster(ctx echo.Context) error {
-	name := ctx.Param("name")
-	delete(vClusters, name)
-	return ctx.NoContent(http.StatusNoContent)
 }
 
 func listen(path string) (net.Listener, error) {
@@ -87,9 +40,7 @@ func listen(path string) (net.Listener, error) {
 }
 
 func hello(ctx echo.Context) error {
-	count = count + 1
-	log.Println(count)
-	return ctx.JSON(http.StatusOK, HTTPMessageBody{Message: "hello boss" + string(count)})
+	return ctx.JSON(http.StatusOK, HTTPMessageBody{Message: "hello"})
 }
 
 type HTTPMessageBody struct {
