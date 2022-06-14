@@ -1,10 +1,10 @@
-async function dockerClient(ddClient, command, args) {
+async function cli(ddClient, command, args) {
     return await ddClient.extension.vm.cli.exec(command, args);
 }
 
 export async function listVClusters(ddClient) {
     // vcluster list --output json
-    let output = await dockerClient(ddClient, "vcluster", ["list", "--output", "json"]);
+    let output = await cli(ddClient, "vcluster", ["list", "--output", "json"]);
     if (output.stderr) {
         console.log("[listVClusters] : ", output.stderr)
         return []
@@ -15,7 +15,7 @@ export async function listVClusters(ddClient) {
 
 export async function createVCluster(ddClient, name, namespace) {
     // vcluster create name -n namespace
-    let output = await dockerClient(ddClient, "vcluster", ["create", name, "-n", namespace]);
+    let output = await cli(ddClient, "vcluster", ["create", name, "-n", namespace]);
     if (output.stderr) {
         console.log("[createVClusters] : ", output.stderr)
         return output.stderr
@@ -24,20 +24,42 @@ export async function createVCluster(ddClient, name, namespace) {
     return true
 }
 
-export async function deleteVCluster(ddClient, name, namespace) {
-    // docker exec loft-toolkit vcluster delete name -n namespace
-    let output = await dockerClient(ddClient, "vcluster", ["delete", name, "-n", namespace]);
+export async function resumeVCluster(ddClient, name, namespace) {
+    // vcluster resume cluster-2 -n vcluster-dev
+    let output = await cli(ddClient, "vcluster", ["resume", name, "-n", namespace]);
     if (output.stderr) {
-        console.log("[deleteVClusters] : ", output.stderr)
+        console.log("[resumeVCluster] : ", output.stderr)
         return false
     }
-    console.log("[deleteVClusters] : ", output.stdout)
+    console.log("[resumeVCluster] : ", output.stdout)
+    return true
+}
+
+export async function pauseVCluster(ddClient, name, namespace) {
+    // vcluster pause cluster-2 -n vcluster-dev
+    let output = await cli(ddClient, "vcluster", ["pause", name, "-n", namespace]);
+    if (output.stderr) {
+        console.log("[pauseVCluster] : ", output.stderr)
+        return false
+    }
+    console.log("[pauseVCluster] : ", output.stdout)
+    return true
+}
+
+export async function deleteVCluster(ddClient, name, namespace) {
+    // vcluster delete name -n namespace
+    let output = await cli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
+    if (output.stderr) {
+        console.log("[deleteVCluster] : ", output.stderr)
+        return false
+    }
+    console.log("[deleteVCluster] : ", output.stdout)
     return true
 }
 
 export async function listNamespaces(ddClient) {
     // kubectl get namespaces --output json
-    let output = await dockerClient(ddClient, "docker", "exec", ["loft-toolkit", "kubectl", "get", "namespaces", "--output", "json"]);
+    let output = await cli(ddClient, "docker", "exec", ["loft-toolkit", "kubectl", "get", "namespaces", "--output", "json"]);
     if (output.stderr) {
         console.log("[listNamespaces] : ", output.stderr)
         return []

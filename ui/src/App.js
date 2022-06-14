@@ -1,11 +1,11 @@
 import React, {useEffect} from "react";
-import Button from "@mui/material/Button";
 import CssBaseline from '@mui/material/CssBaseline';
 import {DockerMuiThemeProvider} from '@docker/docker-mui-theme';
 import {createDockerDesktopClient} from '@docker/extension-api-client';
 import "./App.css";
-import {createVCluster, listVClusters} from "./client/docker-client";
+import {createVCluster, deleteVCluster, listVClusters, pauseVCluster, resumeVCluster} from "./helper/cli";
 import VClusterList from "./vcluster/list";
+import VClusterCreate from "./vcluster/create";
 
 const client = createDockerDesktopClient();
 
@@ -18,35 +18,47 @@ function App() {
     const ddClient = useDockerDesktopClient();
 
     useEffect(() => {
-        const interval = setInterval(() => {
-            listVClusters(ddClient)
-                .then(value => setVClusters(value))
-                .catch(reason => console.log(reason))
-        }, 5000);
-        return () => clearInterval(interval);
+        listVClusters(ddClient)
+            .then(value => setVClusters(value))
+            .catch(reason => console.log(reason))
+        // const interval = setInterval(() => {
+        //     listVClusters(ddClient)
+        //         .then(value => setVClusters(value))
+        //         .catch(reason => console.log(reason))
+        // }, 5000);
+        // //TODO
+        // return () => clearInterval(interval);
     }, [ddClient]);
-    const createVC = async () => {
-        await createVCluster(ddClient, "test", "default");
-        // if (!await isLoftToolKitVolumeCreated(ddClient)) {
-        //     await createVolume(ddClient);
-        // }
-        // if (!await isLoftToolKitPodCreated(ddClient)) {
-        //     await createLoftToolKitContainer(ddClient);
-        // }
-        // await isLoftToolKitPodRunning(ddClient)
-        // await isLoftToolKitVolumeAttached(ddClient)
-        // const result = await ddClient.extension.vm.service.get("/hello");
-        // console.log(result)
+
+    const createUIVC = async (name, namespace) => {
+        await createVCluster(ddClient, name, namespace);
+    };
+
+    const deleteUIVC = async (name, namespace) => {
+        await deleteVCluster(ddClient, name, namespace);
+    };
+
+    const pauseUIVC = async (name, namespace) => {
+        await pauseVCluster(ddClient, name, namespace);
+        const vClusters = await listVClusters(ddClient);
+        setVClusters(vClusters)
+    };
+
+    const resumeUIVC = async (name, namespace) => {
+        await resumeVCluster(ddClient, name, namespace);
     };
 
     return (<DockerMuiThemeProvider>
         <CssBaseline/>
-        <div className="App">
-            <Button variant="contained" onClick={createVC}>
-                Create vCluster
-            </Button>
+        <div>
+            <VClusterCreate/>
             <hr/>
-            <VClusterList vClusters={vClusters}></VClusterList>
+            <VClusterList
+                createUIVC={createUIVC}
+                deleteUIVC={deleteUIVC}
+                pauseUIVC={pauseUIVC}
+                resumeUIVC={resumeUIVC}
+                vClusters={vClusters}/>
         </div>
     </DockerMuiThemeProvider>);
 }
