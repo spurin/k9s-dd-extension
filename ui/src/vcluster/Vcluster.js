@@ -12,7 +12,6 @@ import {
 import VClusterList from "../vcluster/List";
 import VClusterCreate from "../vcluster/Create";
 import {Stack} from "@mui/material";
-import Branding from "../branding/Branding";
 
 const client = createDockerDesktopClient();
 
@@ -20,7 +19,7 @@ function useDockerDesktopClient() {
     return client;
 }
 
-function VCluster() {
+const VCluster = () => {
     const [vClusters, setVClusters] = React.useState([]);
     const [namespaces, setNamespaces] = React.useState([]);
 
@@ -83,10 +82,8 @@ function VCluster() {
             ddClient.desktopUI.toast.error("vCluster resume failed");
         }
     };
-
     return (<>
         <Stack direction="column" spacing={2}>
-            <Branding/>
             <VClusterCreate
                 createUIVC={createUIVC}
                 listUINSs={listUINSs}
