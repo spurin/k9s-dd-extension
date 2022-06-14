@@ -25,7 +25,7 @@ export default function VClusterList(props) {
         width: 250,
         renderCell: (vCluster) => (<Stack direction="row" spacing={2}>
             <Button
-                variant="contained"
+                variant="outlined"
                 onClick={() => handlePause(vCluster)}
                 startIcon={<PauseIcon/>}
                 color="warning"
@@ -34,7 +34,7 @@ export default function VClusterList(props) {
             </Button>
             <Button
                 onClick={() => handleDelete(vCluster)}
-                variant="contained"
+                variant="outlined"
                 color="error"
                 startIcon={<DeleteIcon/>}
                 type="submit">

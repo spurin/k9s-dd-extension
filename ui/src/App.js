@@ -11,11 +11,12 @@ import {
     pauseVCluster,
     resumeVCluster
 } from "./helper/cli";
-import VClusterList from "./vcluster/list";
-import VClusterCreate from "./vcluster/create";
-import {Stack} from "@mui/material";
+import VClusterList from "./vcluster/List";
+import VClusterCreate from "./vcluster/Create";
+import {Alert, Stack} from "@mui/material";
 // import Branding from "./branding";
 import Snackbar from "@mui/material/Snackbar";
+import Branding from "./Branding";
 
 const client = createDockerDesktopClient();
 
@@ -32,7 +33,6 @@ function App() {
     const [namespaces, setNamespaces] = React.useState([]);
     const [opened, setOpened] = React.useState(false);
     const [message, setMessage] = React.useState("");
-
     const {vertical, horizontal} = state;
 
     const ddClient = useDockerDesktopClient();
@@ -93,7 +93,6 @@ function App() {
 
     const resumeUIVC = async (name, namespace) => {
         const isResumed = await resumeVCluster(ddClient, name, namespace);
-        console.log("isResumed", isResumed)
         if (isResumed) {
             showSnackbar({message: "vCluster resume triggered successfully"})
         } else {
@@ -118,14 +117,15 @@ function App() {
             anchorOrigin={{vertical, horizontal}}
             open={opened}
             onClose={hideSnackbar}
-            message={message}
-            key={vertical + horizontal}
-        />
+            key={vertical + horizontal}>
+            <Alert severity="info">{message}</Alert>
+        </Snackbar>
         <Stack direction="column" spacing={2}>
-            {/*<Branding/>*/}
-            <VClusterCreate createUIVC={createUIVC}
-                            listUINSs={listUINSs}
-                            namespaces={namespaces}/>
+            <Branding/>
+            <VClusterCreate
+                createUIVC={createUIVC}
+                listUINSs={listUINSs}
+                namespaces={namespaces}/>
             <hr/>
             <VClusterList
                 listUIVCs={listUIVCs}

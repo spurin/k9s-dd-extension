@@ -31,11 +31,13 @@ export default function VClusterCreate(props) {
 
     const createUIVC = (e) => {
         e.preventDefault();
-        if (name) {
-
+        if (!name) {
+            handleClickOpen()
+            return;
         }
-        if (namespace) {
-
+        if (!namespace) {
+            handleClickOpen()
+            return;
         }
         props.createUIVC(name, namespace).then(value => console.log("vCluster created successfully"))
             .catch(reason => console.log(reason))
@@ -49,7 +51,7 @@ export default function VClusterCreate(props) {
             aria-labelledby="form-dialog-title">
             <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
                 <DialogContentText align={"center"}>
-                    Create New vCluster
+                    Create new vcluster
                 </DialogContentText>
             </DialogTitle>
             <form noValidate onSubmit={createUIVC}>
@@ -95,7 +97,7 @@ export default function VClusterCreate(props) {
         </Dialog>
         <Button variant="contained" onClick={handleClickOpen}
                 startIcon={<CreateIcon/>}>
-            Create new vCluster
+            Create new vcluster
         </Button>
     </Stack>
 }
