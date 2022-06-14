@@ -3,11 +3,33 @@ import {DataGrid} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 
 import {ID_NAMESPACE_SEPARATOR} from "../constants";
 import {Stack} from "@mui/material";
 
 export default function VClusterList(props) {
+    function getButton(vCluster) {
+        if (vCluster.row.Status === "Paused") {
+            return <Button
+                variant="contained"
+                onClick={() => handleResume(vCluster)}
+                startIcon={<PlayArrowIcon/>}
+                color="warning"
+                type="submit">
+                Resume
+            </Button>
+        } else {
+            return <Button
+                variant="contained"
+                onClick={() => handlePause(vCluster)}
+                startIcon={<PauseIcon/>}
+                color="success"
+                type="submit">
+                Pause
+            </Button>
+        }
+    }
 
     const columns = [{
         field: 'Name', headerName: 'Name', width: 150, headerAlign: 'left',
@@ -24,17 +46,10 @@ export default function VClusterList(props) {
         headerName: "Action",
         width: 250,
         renderCell: (vCluster) => (<Stack direction="row" spacing={2}>
-            <Button
-                variant="contained"
-                onClick={() => handlePause(vCluster)}
-                startIcon={<PauseIcon/>}
-                color="warning"
-                type="submit">
-                Pause
-            </Button>
+            {getButton(vCluster)}
             <Button
                 onClick={() => handleDelete(vCluster)}
-                    variant="contained"
+                variant="contained"
                 color="error"
                 startIcon={<DeleteIcon/>}
                 type="submit">
@@ -48,10 +63,14 @@ export default function VClusterList(props) {
     };
 
     const handlePause = (clickedVCluster) => {
+        if (clickedVCluster.row.Status !== 'Paused') {
+            props.pauseUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+        }
+    };
+
+    const handleResume = (clickedVCluster) => {
         if (clickedVCluster.row.Status === 'Paused') {
             props.resumeUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
-        } else {
-            props.pauseUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
         }
     };
 

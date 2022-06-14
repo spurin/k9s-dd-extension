@@ -88,7 +88,6 @@ const VCluster = () => {
                 createUIVC={createUIVC}
                 listUINSs={listUINSs}
                 namespaces={namespaces}/>
-            <hr/>
             <VClusterList
                 listUIVCs={listUIVCs}
                 deleteUIVC={deleteUIVC}
