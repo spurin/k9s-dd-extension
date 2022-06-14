@@ -28,6 +28,7 @@ export default function VClusterList(props) {
                 variant="contained"
                 onClick={() => handlePause(vCluster)}
                 startIcon={<PauseIcon/>}
+                color="warning"
                 type="submit">
                 Pause
             </Button>
@@ -43,12 +44,10 @@ export default function VClusterList(props) {
     }];
 
     const handleDelete = (clickedVCluster) => {
-        console.log(clickedVCluster.row.Name)
         props.deleteUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
     };
 
     const handlePause = (clickedVCluster) => {
-        console.log(clickedVCluster)
         if (clickedVCluster.row.Status === 'Paused') {
             props.resumeUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
         } else {
@@ -56,13 +55,15 @@ export default function VClusterList(props) {
         }
     };
 
-    // const handleSubmit = (e) => {
-    //     e.preventDefault();
-    //     console.log(e.value);
-    // };
-
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>
         <DataGrid
+            sx={{
+                boxShadow: 4, border: 4, borderColor: 'primary.light', '.MuiDataGrid-columnSeparator': {
+                    display: 'none',
+                }, '&.MuiDataGrid-root': {
+                    border: 'none',
+                },
+            }}
             loading={props.vClusters.length === 0}
             getRowId={(row) => row.Name + ID_NAMESPACE_SEPARATOR + row.Namespace}
             rows={props.vClusters}

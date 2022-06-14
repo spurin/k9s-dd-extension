@@ -58,19 +58,20 @@ export async function deleteVCluster(ddClient, name, namespace) {
 }
 
 export async function listNamespaces(ddClient) {
-    // kubectl get namespaces --output json
-    let output = await cli(ddClient, "docker", "exec", ["loft-toolkit", "kubectl", "get", "namespaces", "--output", "json"]);
+    // kubectl get ns --no-headers -o custom-columns=":metadata.name"
+    let output = await cli(ddClient, "kubectl", ["get", "namespaces", "--no-headers", "-o", "custom-columns=\":metadata.name\""]);
     if (output.stderr) {
         console.log("[listNamespaces] : ", output.stderr)
         return []
     }
     console.log("[listNamespaces] : ", output.stdout)
-    let namespaceList = JSON.parse(output.stdout);
     let nsNameList = []
-    namespaceList.items.forEach(namespace => {
-        nsNameList.push(namespace.metadata.name)
+    output.stdout.split("\n").forEach(namespace => {
+        const trimmed = namespace.trim();
+        if (trimmed) {
+            nsNameList.push(trimmed)
+        }
     });
-    console.log(nsNameList)
     return nsNameList
 }
 
