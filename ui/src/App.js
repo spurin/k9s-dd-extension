@@ -14,9 +14,8 @@ import {
 import VClusterList from "./vcluster/List";
 import VClusterCreate from "./vcluster/Create";
 import {Alert, Stack} from "@mui/material";
-// import Branding from "./branding";
 import Snackbar from "@mui/material/Snackbar";
-import Branding from "./Branding";
+import Branding from "./branding/Branding";
 
 const client = createDockerDesktopClient();
 
