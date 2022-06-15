@@ -25,7 +25,7 @@ RUN npm run build
 
 FROM alpine
 LABEL org.opencontainers.image.title="vcluster by Loft" \
-    org.opencontainers.image.description="vcluster Docker Extension" \
+    org.opencontainers.image.description="Perform create/delete/pause/resume/connect operations on vclusters running on docker-desktop-kubernetes." \
     org.opencontainers.image.vendor="Loft Inc." \
     org.opencontainers.image.licenses="Apache-2.0" \
     com.docker.desktop.extension.icon="https://i.ibb.co/mXhVjv8/vcluster.png" \

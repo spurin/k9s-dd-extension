@@ -36,11 +36,9 @@ export default function VClusterList(props) {
     }, {
         field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left',
     }, {
-        field: 'Created', headerName: 'Creation Time', width: 150, headerAlign: 'left',
-    }, {
-        field: 'AgeSeconds', headerName: 'Age Seconds', type: 'number', width: 150, headerAlign: 'left',
-    }, {
         field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
+    }, {
+        field: 'AgeSeconds', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left',
     }, {
         field: "action",
         headerName: "Action",
@@ -77,6 +75,7 @@ export default function VClusterList(props) {
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>
         <DataGrid
             sx={{
+                padding: "10px",
                 boxShadow: 4, border: 4, borderColor: 'primary.light', '.MuiDataGrid-columnSeparator': {
                     display: 'none',
                 }, '&.MuiDataGrid-root': {

@@ -50,6 +50,7 @@ to follow these steps:
    be presented with the UI for managing the virtual clusters created on docker-desktop kubernetes.
 
 ### `Docker Extension` CLI Setup
+https://docs.docker.com/desktop/extensions-sdk
 
 Note: The build steps assume that the Docker Extensions CLI has been installed.
 While `docker-extension` can be called directly, the installation target assumes it has been added as a CLI plugin and can be called as
@@ -64,11 +65,11 @@ cp docker-extension ~/.docker/cli-plugins/
 ```
 
 ### Publishing
-
+// In progress
+[
 The extension uses four "builder" containers for concurrent builds of the Tanzu CLI,
 the backend utility, the React client, etc.
 
-// TODO
 When building and publishing a new extension image,
 ensure you have [authenticated to the GitHub container registry (ghcr).](https://docs.github.com/en/packages/working-with-a-github-packages-registry/working-with-the-container-registry#authenticating-to-the-container-registry)
 This is where the multi architecture builder images are stored and pushed to.
@@ -92,4 +93,4 @@ of rebuilding them and pushing them to ghcr, use:
 ```sh
 V_CI_BUILD=true TAG=1.2.3 make build-push-extension
 ```
-
+]
