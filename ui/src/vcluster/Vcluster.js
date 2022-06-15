@@ -36,19 +36,25 @@ const VCluster = () => {
             console.log(reason);
             setK8sContext({})
         });
-        const interval = setInterval(() => {
-            listVClusters(ddClient)
-                .then(value => setVClusters(value))
-                .catch(reason => console.log(reason))
-            listNamespaces(ddClient)
-                .then(value => setNamespaces(value))
-                .catch(reason => console.log(reason))
-        }, 5000);
-        return () => clearInterval(interval);
+        listVClusters(ddClient)
+            .then(value => setVClusters(value))
+            .catch(reason => console.log(reason))
+        listNamespaces(ddClient)
+            .then(value => setNamespaces(value))
+            .catch(reason => console.log(reason))
+        // const interval = setInterval(() => {
+        //     listVClusters(ddClient)
+        //         .then(value => setVClusters(value))
+        //         .catch(reason => console.log(reason))
+        //     listNamespaces(ddClient)
+        //         .then(value => setNamespaces(value))
+        //         .catch(reason => console.log(reason))
+        // }, 5000);
+        // return () => clearInterval(interval);
     }, [ddClient]);
 
-    const createUIVC = (name, namespace) => {
-        createVCluster(ddClient, name, namespace).then(isCreated => {
+    const createUIVC = (name, namespace, distro, chartVersion) => {
+        createVCluster(ddClient, name, namespace, distro, chartVersion).then(isCreated => {
             if (isCreated) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] create triggered successfully");
             } else {

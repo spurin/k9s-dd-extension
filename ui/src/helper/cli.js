@@ -13,9 +13,27 @@ export async function listVClusters(ddClient) {
     return JSON.parse(output.stdout)
 }
 
-export async function createVCluster(ddClient, name, namespace) {
-    // vcluster create name -n namespace
-    let output = await cli(ddClient, "vcluster", ["create", name, "-n", namespace]);
+export async function createVCluster(ddClient, name, namespace, distro, chartVersion) {
+    // vcluster create name -n namespace --distro k3s --chart-version 0.9.1 --values string
+    let args = ["create", name]
+
+    if (namespace) {
+        args.push("--namespace")
+        args.push(namespace)
+    } else {
+        args.push("--namespace")
+        args.push("vcluster-" + name)
+    }
+    if (distro) {
+        args.push("--distro")
+        args.push(distro)
+    }
+    if (chartVersion) {
+        args.push("--chart-version")
+        args.push(chartVersion)
+    }
+
+    let output = await cli(ddClient, "vcluster", args);
     if (output.stderr) {
         console.log("[createVClusters] : ", output.stderr)
         return output.stderr

@@ -9,6 +9,7 @@ import {
     DialogTitle,
     MenuItem,
     Stack,
+    TextareaAutosize,
     TextField
 } from "@mui/material";
 
@@ -16,7 +17,15 @@ export default function VClusterCreate(props) {
     const [open, setOpen] = React.useState(false);
     const [name, setName] = React.useState("");
     const [namespace, setNamespace] = React.useState("");
+    const [distro, setDistro] = React.useState("");
+    const [chartVersion, setChartVersion] = React.useState("");
+    const [values, setValues] = React.useState("");
 
+    let valuesDefault = `# Additional helm values for the virtual cluster
+storage:
+  size: 5Gi
+`
+    const distros = ["k0s", "k3s", "k8s"];
     const handleClickOpen = () => {
         setOpen(true);
     };
@@ -25,8 +34,12 @@ export default function VClusterCreate(props) {
         setOpen(false);
     };
 
-    const handleChange = (event) => {
+    const handleNamespaceChange = (event) => {
         setNamespace(event.target.value);
+    };
+
+    const handleDistroChange = (event) => {
+        setDistro(event.target.value);
     };
 
     const createUIVC = (e) => {
@@ -35,12 +48,7 @@ export default function VClusterCreate(props) {
             handleClickOpen()
             return;
         }
-        if (!namespace) {
-            handleClickOpen()
-            return;
-        }
-        props.createUIVC(name, namespace).then(value => console.log(value))
-            .catch(reason => console.log(reason))
+        props.createUIVC(name, namespace, distro, chartVersion)
         handleClose()
     };
 
@@ -75,14 +83,57 @@ export default function VClusterCreate(props) {
                             label="Namespace"
                             size="medium"
                             value={namespace}
-                            onChange={handleChange}
+                            onChange={handleNamespaceChange}
                             variant="filled">
+                            <MenuItem value="">
+                                <em>Create new</em>
+                            </MenuItem>
                             {props.namespaces.map((namespace) => (
                                 <MenuItem key={namespace} value={namespace}>
                                     {namespace}
                                 </MenuItem>
                             ))}
                         </TextField>
+                        <TextField
+                            id="outlined-select-distro"
+                            select
+                            label="Distro"
+                            size="medium"
+                            value={distro}
+                            onChange={handleDistroChange}
+                            variant="filled">
+                            <MenuItem value="">
+                                <em>None</em>
+                            </MenuItem>
+                            {distros.map((distro) => (
+                                <MenuItem key={distro} value={distro}>
+                                    {distro}
+                                </MenuItem>
+                            ))}
+                        </TextField>
+                        <TextField
+                            value={chartVersion}
+                            onChange={(event) => setChartVersion(event.target.value)}
+                            variant="filled"
+                            margin="dense"
+                            id="chartVersion"
+                            label="Chart Version"
+                            type="text"
+                            size="medium"
+                            fullWidth
+                        />
+                        <TextareaAutosize
+                            value={values}
+                            onChange={(event) => setValues(event.target.value)}
+                            minRows={10}
+                            placeholder={valuesDefault}
+                            style={{width: 400}}
+                            variant="filled"
+                            margin="dense"
+                            id="values"
+                            label="Values"
+                            size="medium"
+                        />
                     </Stack>
                 </DialogContent>
                 <DialogActions>
