@@ -39,7 +39,7 @@ export default function VClusterCreate(props) {
             handleClickOpen()
             return;
         }
-        props.createUIVC(name, namespace).then(value => console.log("vCluster created successfully"))
+        props.createUIVC(name, namespace).then(value => console.log(value))
             .catch(reason => console.log(reason))
         handleClose()
     };

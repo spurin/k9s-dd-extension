@@ -1,5 +1,5 @@
 IMAGE?=tukobadnyanoba/vcluster-dd-extension
-TAG?=latest
+TAG?=0.0.1
 
 BUILDER=buildx-multi-arch
 
@@ -19,6 +19,15 @@ build-extension: ## Build service image to be deployed as a desktop extension
 
 install-extension: build-extension ## Install the extension
 	docker extension install $(IMAGE):$(TAG)
+
+##### DOCKER
+.PHONY: install
+install: ## Install the extension or update it if already exists
+	docker extension install $(IMAGE):$(TAG) || docker extension update $(IMAGE):$(TAG)
+
+.PHONY: build-install
+build-install: build-extension install ## Build extension images for local arch and install
+
 
 delete-extension:
 	docker extension rm $(IMAGE):$(TAG)

@@ -50,41 +50,41 @@ const VCluster = () => {
     const createUIVC = (name, namespace) => {
         createVCluster(ddClient, name, namespace).then(isCreated => {
             if (isCreated) {
-                ddClient.desktopUI.toast.success("vCluster[" + namespace + ":" + name + "] create triggered successfully");
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] create triggered successfully");
             } else {
-                ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] create failed");
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] create failed");
             }
-        }).catch(reason => ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] create failed : " + reason));
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] create failed : " + reason));
     };
 
     const deleteUIVC = async (name, namespace) => {
         deleteVCluster(ddClient, name, namespace).then(isDeleted => {
             if (isDeleted) {
-                ddClient.desktopUI.toast.success("vCluster[" + namespace + ":" + name + "] delete triggered successfully");
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] delete triggered successfully");
             } else {
-                ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] delete failed");
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] delete failed");
             }
-        }).catch(reason => ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] delete failed : " + reason));
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] delete failed : " + reason));
     };
 
     const pauseUIVC = async (name, namespace) => {
         pauseVCluster(ddClient, name, namespace).then(isPaused => {
             if (isPaused) {
-                ddClient.desktopUI.toast.success("vCluster[" + namespace + ":" + name + "] pause triggered successfully");
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] pause triggered successfully");
             } else {
-                ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] pause failed");
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] pause failed");
             }
-        }).catch(reason => ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] pause failed : " + reason));
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] pause failed : " + reason));
     };
 
     const resumeUIVC = async (name, namespace) => {
         resumeVCluster(ddClient, name, namespace).then(isResumed => {
             if (isResumed) {
-                ddClient.desktopUI.toast.success("vCluster[" + namespace + ":" + name + "] resume triggered successfully");
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] resume triggered successfully");
             } else {
-                ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] resume failed");
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] resume failed");
             }
-        }).catch(reason => ddClient.desktopUI.toast.error("vCluster[" + namespace + ":" + name + "] resume failed : " + reason));
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] resume failed : " + reason));
     };
 
     return (<>
