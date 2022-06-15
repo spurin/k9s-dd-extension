@@ -28,7 +28,7 @@ LABEL org.opencontainers.image.title="vcluster by Loft" \
     org.opencontainers.image.description="vcluster Docker Extension" \
     org.opencontainers.image.vendor="Loft Inc." \
     org.opencontainers.image.licenses="Apache-2.0" \
-    com.docker.desktop.extension.icon="vcluster.png" \
+    com.docker.desktop.extension.icon="https://i.ibb.co/mXhVjv8/vcluster.png" \
     com.docker.desktop.extension.api.version=">= 0.2.3" \
     com.docker.extension.screenshots="[{\"alt\": \"vcluster \", \"url\": \"https://www.vcluster.com/docs/media/diagrams/vcluster-architecture.svg\"}]" \
     com.docker.extension.detailed-description="Virtual clusters run inside namespaces of other clusters. They have a separate API server and a separate data store, so every Kubernetes object you create in the vcluster only exists inside the vcluster." \
