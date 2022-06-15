@@ -26,7 +26,7 @@ export default function Branding(props) {
                     Want to know more about vclusters?
                 </Button>
                 <Button color="primary" variant="contained" onClick={props.handleClickCreateVC}>
-                    Create virtual clusters
+                    Manage vclusters
                 </Button>
             </Stack>
         </Box>

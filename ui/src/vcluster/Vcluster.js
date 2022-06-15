@@ -13,7 +13,7 @@ import {
 import VClusterList from "../vcluster/List";
 import VClusterCreate from "../vcluster/Create";
 import {Stack} from "@mui/material";
-import K8sContext from "../K8sContext";
+import K8sContext from "./K8sContext";
 
 const client = createDockerDesktopClient();
 

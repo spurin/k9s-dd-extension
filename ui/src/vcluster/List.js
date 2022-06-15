@@ -15,7 +15,7 @@ export default function VClusterList(props) {
                 variant="contained"
                 onClick={() => handleResume(vCluster)}
                 startIcon={<PlayArrowIcon/>}
-                color="warning"
+                color="success"
                 type="submit">
                 Resume
             </Button>
@@ -24,9 +24,9 @@ export default function VClusterList(props) {
                 variant="contained"
                 onClick={() => handlePause(vCluster)}
                 startIcon={<PauseIcon/>}
-                color="success"
+                color="warning"
                 type="submit">
-                Pause
+                Pause &nbsp;&nbsp;&nbsp;
             </Button>
         }
     }
