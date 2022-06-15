@@ -103,3 +103,11 @@ export async function getK8sContext(ddClient) {
     console.log("[getK8sContexts] : ", output.stdout)
     return JSON.parse(output.stdout).length > 0 ? JSON.parse(output.stdout)[0] : {}
 }
+
+export async function disconnectVCluster(ddClient) {
+    return true
+}
+
+export async function connectVCluster(ddClient) {
+    return true
+}

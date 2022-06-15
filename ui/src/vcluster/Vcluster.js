@@ -2,8 +2,10 @@ import React, {useEffect} from "react";
 import {createDockerDesktopClient} from '@docker/extension-api-client';
 import "../App.css";
 import {
+    connectVCluster,
     createVCluster,
     deleteVCluster,
+    disconnectVCluster,
     getK8sContext,
     listNamespaces,
     listVClusters,
@@ -93,6 +95,26 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] resume failed : " + reason));
     };
 
+    const disconnectUIVC = async (name, namespace) => {
+        disconnectVCluster(ddClient, name, namespace).then(isDisconnected => {
+            if (isDisconnected) {
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] disconnect triggered successfully");
+            } else {
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] disconnect failed");
+            }
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] disconnect failed : " + reason));
+    };
+
+    const connectUIVC = async (name, namespace) => {
+        connectVCluster(ddClient, name, namespace).then(isConnected => {
+            if (isConnected) {
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] connect triggered successfully");
+            } else {
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] connect failed");
+            }
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] connect failed : " + reason));
+    };
+
     return (<>
         <Stack direction="column" spacing={2}>
             <K8sContext k8sContext={k8sContext}/>
@@ -104,6 +126,8 @@ const VCluster = () => {
                 deleteUIVC={deleteUIVC}
                 pauseUIVC={pauseUIVC}
                 resumeUIVC={resumeUIVC}
+                disconnectUIVC={disconnectUIVC}
+                connectUIVC={connectUIVC}
                 vClusters={vClusters}
             />
         </Stack>
