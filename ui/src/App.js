@@ -36,7 +36,6 @@ export default function App() {
                 />
             </Stack>
         </Link>
-        <hr/>
         {component}
     </DockerMuiThemeProvider>);
 }

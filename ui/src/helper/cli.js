@@ -75,6 +75,13 @@ export async function listNamespaces(ddClient) {
     return nsNameList
 }
 
-export async function isK8sConnectionActive(ddClient) {
-    return true
+export async function getK8sContext(ddClient) {
+    // kubectl config view -o jsonpath='{.contexts}'
+    let output = await cli(ddClient, "kubectl", ["config", "view", "-o", "jsonpath='{.contexts}'"]);
+    if (output.stderr) {
+        console.log("[getK8sContexts] : ", output.stderr)
+        return {}
+    }
+    console.log("[getK8sContexts] : ", output.stdout)
+    return JSON.parse(output.stdout).length > 0 ? JSON.parse(output.stdout)[0] : {}
 }
