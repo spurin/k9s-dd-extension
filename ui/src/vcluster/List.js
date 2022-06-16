@@ -34,16 +34,7 @@ export default function VClusterList(props) {
     }
 
     const getConnectDisconnectButtons = (vCluster) => {
-        if (vCluster) {
-            return <Button
-                variant="contained"
-                onClick={() => handleConnect(vCluster)}
-                startIcon={<CloudIcon/>}
-                color="success"
-                type="submit">
-                Connect
-            </Button>
-        } else {
+        if (isConnected(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Context)) {
             return <Button
                 variant="contained"
                 onClick={() => handleDisconnect(vCluster)}
@@ -52,7 +43,24 @@ export default function VClusterList(props) {
                 type="submit">
                 Disconnect &nbsp;&nbsp;&nbsp;
             </Button>
+        } else {
+            return <Button
+                variant="contained"
+                onClick={() => handleConnect(vCluster)}
+                startIcon={<CloudIcon/>}
+                color="success"
+                type="submit">
+                Connect
+            </Button>
         }
+    }
+
+    const isConnected = (name, namespace, context) => {
+        return props.currentK8sContext === getVClusterContextName(name, namespace, context)
+    }
+
+    const getVClusterContextName = (name, namespace, context) => {
+        return "vcluster_" + name + "_" + namespace + "_" + context
     }
 
     const columns = [{
@@ -62,8 +70,7 @@ export default function VClusterList(props) {
     }, {
         field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
     }, {
-        field: 'Age', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left',
-        renderCell: (vCluster) => (<>
+        field: 'Age', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left', renderCell: (vCluster) => (<>
             {convertSeconds(vCluster.row.Created)}
         </>)
     }, {
@@ -99,7 +106,7 @@ export default function VClusterList(props) {
     };
 
     const handleDisconnect = (clickedVCluster) => {
-        props.disconnectUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+        props.disconnectUIVC(clickedVCluster.row.Namespace, getVClusterContextName(clickedVCluster.row.Name, clickedVCluster.row.Namespace, clickedVCluster.row.Context))
     };
 
     const handleResume = (clickedVCluster) => {

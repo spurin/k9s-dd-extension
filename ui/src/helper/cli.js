@@ -93,27 +93,33 @@ export async function listNamespaces(ddClient) {
     return nsNameList
 }
 
-export async function getK8sContext(ddClient) {
-    // kubectl config view -o jsonpath='{.contexts}'
-    let output = await cli(ddClient, "kubectl", ["config", "view", "-o", "jsonpath='{.contexts}'"]);
-    if (output.stderr) {
-        console.log("[getK8sContexts] : ", output.stderr)
-        return {}
+// Runs `vcluster disconnect` command on host and changes the context back to older context.
+export async function disconnectVCluster(ddClient, namespace, context) {
+    // vcluster disconnect --namespace namespace --context context
+    let disconnect = await ddClient.extension.host.cli.exec("vcluster", ["disconnect", "-n", namespace, "--context", context]);
+    if (disconnect.stderr) {
+        console.log("[disconnectVCluster] : ", disconnect.stderr)
+        return false
     }
-    console.log("[getK8sContexts] : ", output.stdout)
-    return JSON.parse(output.stdout).length > 0 ? JSON.parse(output.stdout)[0] : {}
-}
-
-export async function disconnectVCluster(ddClient, name, namespace) {
+    console.log("[disconnectVCluster] : ", disconnect.output)
     return true
 }
 
-
+// Runs `vcluster connect` command on host and changes the context is changed internally.
 export async function connectVCluster(ddClient, name, namespace) {
+    // vcluster connect name -n namespace
+    let connect = await ddClient.extension.host.cli.exec("vcluster", ["connect", name, "-n", namespace]);
+    if (connect.stderr) {
+        console.log("[connectVCluster] : ", connect.stderr)
+        return false
+    }
+    console.log("[connectVCluster] : ", connect.output)
     return true
 }
 
-
+// Get docker-desktop kubeconfig file from local and save it in container's /root/.kube/config file-system.
+// We have to use the vm.service to call the post api to store the kubeconfig retrieved. Without post api in vm.service
+// all the combinations of commands fail
 export async function getDockerDesktopK8sKubeConfig(ddClient) {
     // kubectl config view --raw
     let kubeConfig = await ddClient.extension.host.cli.exec("kubectl", ["config", "view", "--raw"]);
@@ -121,7 +127,38 @@ export async function getDockerDesktopK8sKubeConfig(ddClient) {
         console.log("[getDockerDesktopK8sKubeConfig] : ", kubeConfig.stderr)
         return false
     }
-    const result = await ddClient.extension.vm.service.post("/createKubeConfigFile", {data: kubeConfig.stdout})
+
+    //TODO add filter logic
+    function filterContext(stdout) {
+        return stdout
+    }
+
+    // Call backend to store the kubeconfig retrieved
+    const result = await ddClient.extension.vm.service.post("/createKubeConfigFile", {data: filterContext(kubeConfig.stdout)})
     console.log("[getDockerDesktopK8sKubeConfig] : ", result)
     return true
+}
+
+// Retrieves host's current k8s context
+export async function getCurrentK8sContext(ddClient) {
+    // kubectl config view -o jsonpath='{.current-context}'
+    let output = await ddClient.extension.host.cli.exec("kubectl", ["config", "view", "-o", "jsonpath='{.current-context}'"]);
+    if (output.stderr) {
+        console.log("[getCurrentK8sContext] : ", output.stderr)
+        return {}
+    }
+    console.log("[getCurrentK8sContext] : ", output.stdout)
+    return output.stdout
+}
+
+// Retrieves container's current k8s context
+export async function getContainerK8sContext(ddClient) {
+    // kubectl config view -o jsonpath='{.contexts}'
+    let output = await cli(ddClient, "kubectl", ["config", "view", "-o", "jsonpath='{.contexts}'"]);
+    if (output.stderr) {
+        console.log("[getContainerK8sContext] : ", output.stderr)
+        return {}
+    }
+    console.log("[getContainerK8sContext] : ", output.stdout)
+    return JSON.parse(output.stdout).length > 0 ? JSON.parse(output.stdout)[0] : {}
 }

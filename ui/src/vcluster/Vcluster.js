@@ -6,8 +6,8 @@ import {
     createVCluster,
     deleteVCluster,
     disconnectVCluster,
+    getCurrentK8sContext,
     getDockerDesktopK8sKubeConfig,
-    getK8sContext,
     listNamespaces,
     listVClusters,
     pauseVCluster,
@@ -16,7 +16,6 @@ import {
 import VClusterList from "../vcluster/List";
 import VClusterCreate from "../vcluster/Create";
 import {Stack} from "@mui/material";
-import K8sContext from "./K8sContext";
 
 const client = createDockerDesktopClient();
 
@@ -27,7 +26,8 @@ function useDockerDesktopClient() {
 const VCluster = () => {
     const [vClusters, setVClusters] = React.useState([]);
     const [namespaces, setNamespaces] = React.useState([]);
-    const [k8sContext, setK8sContext] = React.useState([]);
+    // const [containerK8sContext, setContainerK8sContext] = React.useState([]);
+    const [currentK8sContext, setCurrentK8sContext] = React.useState([""]);
 
     const ddClient = useDockerDesktopClient();
 
@@ -35,14 +35,24 @@ const VCluster = () => {
         getDockerDesktopK8sKubeConfig(ddClient).then(kubeConfigFile => {
             console.log(kubeConfigFile)
         }).catch(reason => {
+            // TODO if error then show a default page
             console.log(reason);
         });
-        getK8sContext(ddClient).then(k8sContext => {
-            console.log(k8sContext)
-            setK8sContext(k8sContext)
+        // TODO need to think of its better place on UI
+        // getContainerK8sContext(ddClient).then(containerK8sContext => {
+        //     console.log(containerK8sContext)
+        //     setContainerK8sContext(containerK8sContext)
+        // }).catch(reason => {
+        //     console.log(reason);
+        //     setContainerK8sContext({})
+        // });
+        //Todo -- to be put in the interval
+        getCurrentK8sContext(ddClient).then(currentK8sContext => {
+            console.log(currentK8sContext)
+            setCurrentK8sContext(currentK8sContext)
         }).catch(reason => {
             console.log(reason);
-            setK8sContext({})
+            setCurrentK8sContext("")
         });
         listVClusters(ddClient)
             .then(value => setVClusters(value))
@@ -101,14 +111,14 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] resume failed : " + JSON.stringify(reason)));
     };
 
-    const disconnectUIVC = (name, namespace) => {
-        disconnectVCluster(ddClient, name, namespace).then(isDisconnected => {
+    const disconnectUIVC = (namespace, context) => {
+        disconnectVCluster(ddClient, namespace, context).then(isDisconnected => {
             if (isDisconnected) {
-                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] disconnect triggered successfully");
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + "] disconnect triggered successfully");
             } else {
-                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] disconnect failed");
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + "] disconnect failed");
             }
-        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] disconnect failed : " + JSON.stringify(reason)));
+        }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + "] disconnect failed : " + JSON.stringify(reason)));
     };
 
     const connectUIVC = (name, namespace) => {
@@ -126,7 +136,7 @@ const VCluster = () => {
 
     return (<>
         <Stack direction="column" spacing={2}>
-            <K8sContext k8sContext={k8sContext}/>
+            {/*<K8sContext containerK8sContext={containerK8sContext}/>*/}
             <hr/>
             <VClusterCreate
                 createUIVC={createUIVC}
@@ -138,6 +148,7 @@ const VCluster = () => {
                 disconnectUIVC={disconnectUIVC}
                 connectUIVC={connectUIVC}
                 vClusters={vClusters}
+                currentK8sContext={currentK8sContext}
             />
         </Stack>
     </>);
