@@ -74,7 +74,7 @@ export default function VClusterList(props) {
     }, {
         field: "action",
         headerName: "Action",
-        width: 450,
+        width: 400,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
             {getPauseResumeButtons(vCluster)}
             <Button
