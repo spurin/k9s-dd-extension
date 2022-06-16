@@ -35,11 +35,12 @@ const VCluster = () => {
     useEffect(() => {
         getDockerDesktopK8sKubeConfig(ddClient).then(kubeConfigFile => {
             console.log(kubeConfigFile)
-            setIsDDK8sKubeConfigAvailable(true)
+            setIsDDK8sKubeConfigAvailable(kubeConfigFile)
         }).catch(reason => {
             console.log(reason);
             setIsDDK8sKubeConfigAvailable(false)
         });
+
         // TODO need to think of its better place on UI
         // getContainerK8sContext(ddClient).then(containerK8sContext => {
         //     console.log(containerK8sContext)
@@ -48,6 +49,7 @@ const VCluster = () => {
         //     console.log(reason);
         //     setContainerK8sContext({})
         // });
+
         // TODO - remove in final build till then needs to be kept
         // listVClusters(ddClient)
         //     .then(value => setVClusters(value))

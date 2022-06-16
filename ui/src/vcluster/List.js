@@ -7,9 +7,9 @@ import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 import CloudIcon from '@mui/icons-material/Cloud';
 
-import {ID_NAMESPACE_SEPARATOR} from "../constants";
+import {ID_NAMESPACE_SEPARATOR} from "../helper/constants";
 import {Stack} from "@mui/material";
-import {convertSeconds} from "../helper/util";
+import {convertSeconds, getVClusterContextName} from "../helper/util";
 
 export default function VClusterList(props) {
     const getPauseResumeButtons = (vCluster) => {
@@ -59,10 +59,6 @@ export default function VClusterList(props) {
 
     const isConnected = (name, namespace, context) => {
         return props.currentK8sContext === getVClusterContextName(name, namespace, context)
-    }
-
-    const getVClusterContextName = (name, namespace, context) => {
-        return "vcluster_" + name + "_" + namespace + "_" + context
     }
 
     const columns = [{

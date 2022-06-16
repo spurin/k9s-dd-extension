@@ -7,7 +7,9 @@ import {Box, Stack} from "@mui/material";
 
 export default function App() {
     const [show, setShow] = React.useState(false);
-
+    // Comment below line and get all the loggers working again
+    console.log = function () {
+    }
     const handleClickCreateVC = () => {
         setShow(true);
     };

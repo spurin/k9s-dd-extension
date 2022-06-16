@@ -1,11 +1,12 @@
-import yamlToJson from "js-yaml";
+import {filterContext} from "./util";
 
-const DockerDesktop = "docker-desktop"
 
+// Common function to call vm.cli.exec
 async function cli(ddClient, command, args) {
     return await ddClient.extension.vm.cli.exec(command, args);
 }
 
+// Retrieves all the vclusters from docker-desktop kubernetes
 export async function listVClusters(ddClient) {
     // vcluster list --output json
     let output = await cli(ddClient, "vcluster", ["list", "--output", "json"]);
@@ -17,6 +18,7 @@ export async function listVClusters(ddClient) {
     return JSON.parse(output.stdout)
 }
 
+// Create vcluster on docker-desktop kubernetes
 export async function createVCluster(ddClient, name, namespace, distro, chartVersion) {
     // vcluster create name -n namespace --distro k3s --chart-version 0.9.1 --values string
     let args = ["create", name]
@@ -46,6 +48,7 @@ export async function createVCluster(ddClient, name, namespace, distro, chartVer
     return true
 }
 
+// Resumes the vcluster
 export async function resumeVCluster(ddClient, name, namespace) {
     // vcluster resume cluster-2 -n vcluster-dev
     let output = await cli(ddClient, "vcluster", ["resume", name, "-n", namespace]);
@@ -57,6 +60,7 @@ export async function resumeVCluster(ddClient, name, namespace) {
     return true
 }
 
+// Pauses the vcluster
 export async function pauseVCluster(ddClient, name, namespace) {
     // vcluster pause cluster-2 -n vcluster-dev
     let output = await cli(ddClient, "vcluster", ["pause", name, "-n", namespace]);
@@ -68,6 +72,7 @@ export async function pauseVCluster(ddClient, name, namespace) {
     return true
 }
 
+// Deletes the vcluster
 export async function deleteVCluster(ddClient, name, namespace) {
     // vcluster delete name -n namespace
     let output = await cli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
@@ -79,6 +84,7 @@ export async function deleteVCluster(ddClient, name, namespace) {
     return true
 }
 
+// Lists all namespaces from docker-desktop kubernetes
 export async function listNamespaces(ddClient) {
     // kubectl get ns --no-headers -o custom-columns=":metadata.name"
     let output = await cli(ddClient, "kubectl", ["get", "namespaces", "--no-headers", "-o", "custom-columns=\":metadata.name\""]);
@@ -130,45 +136,6 @@ export async function getDockerDesktopK8sKubeConfig(ddClient) {
     if (kubeConfig.stderr) {
         console.log("[getDockerDesktopK8sKubeConfig] : ", kubeConfig.stderr)
         return false
-    }
-
-    const filterContext = (kubeConfig) => {
-        try {
-            const newJsonKubeConfig = {}
-            const jsonKubeConfig = yamlToJson.load(kubeConfig)
-            const clusters = jsonKubeConfig["clusters"];
-            const newClusters = []
-            for (let i = 0; i < clusters.length; i++) {
-                if (clusters[i].name === DockerDesktop) {
-                    newClusters.push(clusters[i])
-                }
-            }
-            const contexts = jsonKubeConfig["contexts"];
-            const newContexts = []
-            for (let i = 0; i < contexts.length; i++) {
-                if (contexts[i].name === DockerDesktop) {
-                    newContexts.push(contexts[i])
-                }
-            }
-            const users = jsonKubeConfig["users"];
-            const newUsers = []
-            for (let i = 0; i < users.length; i++) {
-                if (users[i].name === DockerDesktop) {
-                    newUsers.push(users[i])
-                }
-            }
-            newJsonKubeConfig["contexts"] = newContexts
-            newJsonKubeConfig["clusters"] = newClusters
-            newJsonKubeConfig["users"] = newUsers
-            newJsonKubeConfig["kind"] = "Config"
-            newJsonKubeConfig["current-context"] = DockerDesktop
-            newJsonKubeConfig["preferences"] = {}
-            newJsonKubeConfig["apiVersion"] = "v1"
-            return yamlToJson.dump(newJsonKubeConfig)
-        } catch (error) {
-            console.log(error)
-        }
-        return ""
     }
 
     // Call backend to store the kubeconfig retrieved
