@@ -44,10 +44,6 @@ storage:
 
     const createUIVC = (e) => {
         e.preventDefault();
-        if (!name) {
-            handleClickOpen()
-            return;
-        }
         props.createUIVC(name, namespace, distro, chartVersion)
         handleClose()
     };
@@ -140,7 +136,12 @@ storage:
                     <Button onClick={handleClose} color="error" variant="contained">
                         Cancel
                     </Button>
-                    <Button onClick={handleClose} color="primary" variant="contained" type="submit">
+                    <Button
+                        onClick={handleClose}
+                        color="primary"
+                        variant="contained"
+                        disabled={name === ""}
+                        type="submit">
                         Create
                     </Button>
                 </DialogActions>

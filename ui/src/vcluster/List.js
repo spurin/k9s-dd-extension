@@ -50,6 +50,7 @@ export default function VClusterList(props) {
                 onClick={() => handleConnect(vCluster)}
                 startIcon={<CloudIcon/>}
                 color="success"
+                disabled={vCluster.row.Status !== 'Running'}
                 type="submit">
                 Connect
             </Button>
@@ -103,7 +104,9 @@ export default function VClusterList(props) {
     };
 
     const handleConnect = (clickedVCluster) => {
-        props.connectUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+        if (clickedVCluster.row.Status === 'Running') {
+            props.connectUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+        }
     };
 
     const handleDisconnect = (clickedVCluster) => {
