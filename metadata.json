@@ -21,17 +21,35 @@
       {
         "darwin": [
           {
-            "path": "/darwin/myBinary"
+            "path": "/darwin/kubectl"
+          },
+          {
+            "path": "/darwin/helm"
+          },
+          {
+            "path": "/darwin/vcluster"
           }
         ],
         "windows": [
           {
-            "path": "/windows/myBinary.exe"
+            "path": "/windows/kubectl.exe"
+          },
+          {
+            "path": "/windows/helm.exe"
+          },
+          {
+            "path": "/windows/vcluster.exe"
           }
         ],
         "linux": [
           {
             "path": "/linux/kubectl"
+          },
+          {
+            "path": "/linux/vcluster"
+          },
+          {
+            "path": "/linux/helm"
           }
         ]
       }
