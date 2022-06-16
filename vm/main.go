@@ -43,6 +43,7 @@ type Payload struct {
 	Data string `json:"data"`
 }
 
+// Store kubeconfig in the request in the container filesystem
 func createKubeConfigFile(ctx echo.Context) error {
 	payload := &Payload{}
 	if err := ctx.Bind(payload); err != nil {
