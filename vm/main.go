@@ -18,7 +18,7 @@ func main() {
 	if err != nil {
 		return
 	}
-	log.Println("Starting listening on %s\n", socketPath)
+	log.Printf("Starting listening on %s\n", socketPath)
 	router := echo.New()
 	router.HideBanner = true
 
@@ -30,7 +30,7 @@ func main() {
 	}
 	router.Listener = ln
 
-	router.GET("/hello", hello)
+	router.POST("/createKubeConfigFile", createKubeConfigFile)
 
 	log.Fatal(router.Start(startURL))
 }
@@ -39,10 +39,20 @@ func listen(path string) (net.Listener, error) {
 	return net.Listen("unix", path)
 }
 
-func hello(ctx echo.Context) error {
-	return ctx.JSON(http.StatusOK, HTTPMessageBody{Message: "hello"})
+type Payload struct {
+	Data string `json:"data"`
 }
 
-type HTTPMessageBody struct {
-	Message string
+func createKubeConfigFile(ctx echo.Context) error {
+	payload := &Payload{}
+	if err := ctx.Bind(payload); err != nil {
+		return err
+	}
+	const kubeConfigFilePath = "/root/.kube/config"
+	data := []byte(payload.Data)
+	err := os.WriteFile(kubeConfigFilePath, data, 0644)
+	if err != nil {
+		panic(err)
+	}
+	return ctx.JSON(http.StatusCreated, kubeConfigFilePath)
 }

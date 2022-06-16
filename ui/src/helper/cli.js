@@ -104,10 +104,24 @@ export async function getK8sContext(ddClient) {
     return JSON.parse(output.stdout).length > 0 ? JSON.parse(output.stdout)[0] : {}
 }
 
-export async function disconnectVCluster(ddClient) {
+export async function disconnectVCluster(ddClient, name, namespace) {
     return true
 }
 
-export async function connectVCluster(ddClient) {
+
+export async function connectVCluster(ddClient, name, namespace) {
+    return true
+}
+
+
+export async function getDockerDesktopK8sKubeConfig(ddClient) {
+    // kubectl config view --raw
+    let kubeConfig = await ddClient.extension.host.cli.exec("kubectl", ["config", "view", "--raw"]);
+    if (kubeConfig.stderr) {
+        console.log("[getDockerDesktopK8sKubeConfig] : ", kubeConfig.stderr)
+        return false
+    }
+    const result = await ddClient.extension.vm.service.post("/createKubeConfigFile", {data: kubeConfig.stdout})
+    console.log("[getDockerDesktopK8sKubeConfig] : ", result)
     return true
 }

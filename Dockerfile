@@ -42,10 +42,13 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
     && chmod +x ./kubectl && mv ./kubectl /usr/local/bin/kubectl \
     && curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-linux-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster \
     && chmod +x vcluster && mv vcluster /usr/local/bin \
+    && mkdir /linux \
+    && cp /usr/local/bin/kubectl /linux/ \
     && curl -LO https://get.helm.sh/helm-v3.8.2-linux-amd64.tar.gz \
-    && tar -xzf helm-v3.8.2-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/helm && chmod +x /usr/bin/helm
+    && tar -xzf helm-v3.8.2-linux-amd64.tar.gz && mv linux-amd64/helm /usr/bin/helm && chmod +x /usr/bin/helm && rm helm-v3.8.2-linux-amd64.tar.gz
 
-RUN mkdir /root/.kube
+RUN mkdir -p /root/.kube
+RUN touch /root/.kube/config
 ENV KUBECONFIG=/root/.kube/config
 COPY docker-compose.yaml .
 COPY metadata.json .

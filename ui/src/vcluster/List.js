@@ -62,14 +62,14 @@ export default function VClusterList(props) {
     }, {
         field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
     }, {
-        field: 'AgeSeconds', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left',
+        field: 'Age', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left',
         renderCell: (vCluster) => (<>
-            {convertSeconds(vCluster.row.AgeSeconds)}
+            {convertSeconds(vCluster.row.Created)}
         </>)
     }, {
         field: "action",
         headerName: "Action",
-        width: '100%',
+        width: 450,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
             {getPauseResumeButtons(vCluster)}
             <Button
@@ -108,19 +108,23 @@ export default function VClusterList(props) {
         }
     };
 
-    const convertSeconds = function (seconds) {
-        const SECONDS_PER_DAY = 86400;
-        const HOURS_PER_DAY = 24;
-        const days = Math.floor(seconds / SECONDS_PER_DAY);
-        const remainderSeconds = seconds % SECONDS_PER_DAY;
-        const hms = new Date(remainderSeconds * 1000).toISOString().substring(11, 19);
-        const replaced = hms.replace(/^(\d+)/, h => `${Number(h) + days * HOURS_PER_DAY}`.padStart(2, '0'));
-        const strings = replaced.split(":");
-        let output = ""
-        output += parseInt(strings[0]) > 0 ? parseInt(strings[0]) + "h" : ""
-        output += parseInt(strings[1]) > 0 ? parseInt(strings[1]) + "m" : ""
-        output += parseInt(strings[2]) > 0 ? parseInt(strings[2]) + "s" : ""
-        return output
+    const convertSeconds = function (date) {
+        if (date) {
+            let seconds = Math.floor((new Date() - new Date(date)) / 1000);
+            const SECONDS_PER_DAY = 86400;
+            const HOURS_PER_DAY = 24;
+            const days = Math.floor(seconds / SECONDS_PER_DAY);
+            const remainderSeconds = seconds % SECONDS_PER_DAY;
+            const hms = new Date(remainderSeconds * 1000).toISOString().substring(11, 19);
+            const replaced = hms.replace(/^(\d+)/, h => `${Number(h) + days * HOURS_PER_DAY}`.padStart(2, '0'));
+            const strings = replaced.split(":");
+            let output = ""
+            output += parseInt(strings[0]) > 0 ? parseInt(strings[0]) + "h" : ""
+            output += parseInt(strings[1]) > 0 ? parseInt(strings[1]) + "m" : ""
+            output += parseInt(strings[2]) > 0 ? parseInt(strings[2]) + "s" : ""
+            return output
+        }
+        return ""
     }
 
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>

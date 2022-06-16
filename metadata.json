@@ -15,5 +15,26 @@
         "socket": "vcluster-dd-extension.sock"
       }
     }
+  },
+  "host": {
+    "binaries": [
+      {
+        "darwin": [
+          {
+            "path": "/darwin/myBinary"
+          }
+        ],
+        "windows": [
+          {
+            "path": "/windows/myBinary.exe"
+          }
+        ],
+        "linux": [
+          {
+            "path": "/linux/kubectl"
+          }
+        ]
+      }
+    ]
   }
 }
