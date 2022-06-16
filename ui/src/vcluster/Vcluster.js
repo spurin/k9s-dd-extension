@@ -46,7 +46,7 @@ const VCluster = () => {
         //     console.log(reason);
         //     setContainerK8sContext({})
         // });
-        //Todo -- to be put in the interval
+        // TODO -- to be put in the interval
         getCurrentK8sContext(ddClient).then(currentK8sContext => {
             console.log(currentK8sContext)
             setCurrentK8sContext(currentK8sContext)

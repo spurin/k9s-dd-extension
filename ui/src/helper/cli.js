@@ -1,3 +1,7 @@
+import yamlToJson from "js-yaml";
+
+const DockerDesktop = "docker-desktop"
+
 async function cli(ddClient, command, args) {
     return await ddClient.extension.vm.cli.exec(command, args);
 }
@@ -117,7 +121,7 @@ export async function connectVCluster(ddClient, name, namespace) {
     return true
 }
 
-// Get docker-desktop kubeconfig file from local and save it in container's /root/.kube/config file-system.
+// Gets docker-desktop kubeconfig file from local and save it in container's /root/.kube/config file-system.
 // We have to use the vm.service to call the post api to store the kubeconfig retrieved. Without post api in vm.service
 // all the combinations of commands fail
 export async function getDockerDesktopK8sKubeConfig(ddClient) {
@@ -128,9 +132,43 @@ export async function getDockerDesktopK8sKubeConfig(ddClient) {
         return false
     }
 
-    //TODO add filter logic
-    function filterContext(stdout) {
-        return stdout
+    const filterContext = (kubeConfig) => {
+        try {
+            const newJsonKubeConfig = {}
+            const jsonKubeConfig = yamlToJson.load(kubeConfig)
+            const clusters = jsonKubeConfig["clusters"];
+            const newClusters = []
+            for (let i = 0; i < clusters.length; i++) {
+                if (clusters[i].name === DockerDesktop) {
+                    newClusters.push(clusters[i])
+                }
+            }
+            const contexts = jsonKubeConfig["contexts"];
+            const newContexts = []
+            for (let i = 0; i < contexts.length; i++) {
+                if (contexts[i].name === DockerDesktop) {
+                    newContexts.push(contexts[i])
+                }
+            }
+            const users = jsonKubeConfig["users"];
+            const newUsers = []
+            for (let i = 0; i < users.length; i++) {
+                if (users[i].name === DockerDesktop) {
+                    newUsers.push(users[i])
+                }
+            }
+            newJsonKubeConfig["contexts"] = newContexts
+            newJsonKubeConfig["clusters"] = newClusters
+            newJsonKubeConfig["users"] = newUsers
+            newJsonKubeConfig["kind"] = "Config"
+            newJsonKubeConfig["current-context"] = DockerDesktop
+            newJsonKubeConfig["preferences"] = {}
+            newJsonKubeConfig["apiVersion"] = "v1"
+            return yamlToJson.dump(newJsonKubeConfig)
+        } catch (error) {
+            console.log(error)
+        }
+        return ""
     }
 
     // Call backend to store the kubeconfig retrieved
