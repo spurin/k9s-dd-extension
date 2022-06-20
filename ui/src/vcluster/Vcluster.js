@@ -7,11 +7,10 @@ import {
     deleteVCluster,
     disconnectVCluster,
     getCurrentK8sContext,
-    getDockerDesktopK8sKubeConfig,
     listNamespaces,
     listVClusters,
     pauseVCluster,
-    resumeVCluster
+    resumeVCluster, updateDockerDesktopK8sKubeConfig
 } from "../helper/cli";
 import VClusterList from "../vcluster/List";
 import VClusterCreate from "../vcluster/Create";
@@ -19,60 +18,36 @@ import {Stack} from "@mui/material";
 
 const client = createDockerDesktopClient();
 
-function useDockerDesktopClient() {
-    return client;
+async function refreshData(setCurrentK8sContext, setVClusters, setNamespaces) {
+    try {
+        const result = await Promise.all([getCurrentK8sContext(client), listVClusters(client), listNamespaces(client)]);
+        setCurrentK8sContext(result[0]);
+        setVClusters(result[1]);
+        setNamespaces(result[2]);
+    } catch (err) {
+        console.log(err);
+        setCurrentK8sContext("")
+    }
 }
 
 const VCluster = () => {
-    const [vClusters, setVClusters] = React.useState([]);
+    const [vClusters, setVClusters] = React.useState(undefined);
     const [namespaces, setNamespaces] = React.useState([]);
-    // const [containerK8sContext, setContainerK8sContext] = React.useState([]);
     const [currentK8sContext, setCurrentK8sContext] = React.useState([""]);
-    const [isDDK8sKubeConfigAvailable, setIsDDK8sKubeConfigAvailable] = React.useState(false);
-
-    const ddClient = useDockerDesktopClient();
+    const ddClient = client;
 
     useEffect(() => {
-        getDockerDesktopK8sKubeConfig(ddClient).then(kubeConfigFile => {
-            console.log(kubeConfigFile)
-            setIsDDK8sKubeConfigAvailable(kubeConfigFile)
-        }).catch(reason => {
-            console.log(reason);
-            setIsDDK8sKubeConfigAvailable(false)
-        });
+        (async () => {
+            try {
+                await updateDockerDesktopK8sKubeConfig(ddClient)
+            } catch (err) {
+                console.log("error", err);
+            }
 
-        // TODO need to think of its better place on UI
-        // getContainerK8sContext(ddClient).then(containerK8sContext => {
-        //     console.log(containerK8sContext)
-        //     setContainerK8sContext(containerK8sContext)
-        // }).catch(reason => {
-        //     console.log(reason);
-        //     setContainerK8sContext({})
-        // });
+            await refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
+        })()
 
-        // TODO - remove in final build till then needs to be kept
-        // listVClusters(ddClient)
-        //     .then(value => setVClusters(value))
-        //     .catch(reason => console.log(reason))
-        // listNamespaces(ddClient)
-        //     .then(value => setNamespaces(value))
-        //     .catch(reason => console.log(reason))
-
-        const interval = setInterval(() => {
-            getCurrentK8sContext(ddClient).then(currentK8sContext => {
-                console.log(currentK8sContext)
-                setCurrentK8sContext(currentK8sContext)
-            }).catch(reason => {
-                console.log(reason);
-                setCurrentK8sContext("")
-            });
-            listVClusters(ddClient)
-                .then(value => setVClusters(value))
-                .catch(reason => console.log(reason))
-            listNamespaces(ddClient)
-                .then(value => setNamespaces(value))
-                .catch(reason => console.log(reason))
-        }, 5000);
+        const interval = setInterval(() => refreshData(setCurrentK8sContext, setVClusters, setNamespaces), 5000);
         return () => clearInterval(interval);
     }, [ddClient]);
 
@@ -139,28 +114,21 @@ const VCluster = () => {
         );
     };
 
-    if (!isDDK8sKubeConfigAvailable) {
-        return <h1>docker-desktop context note available</h1>
-    } else {
-        return (<>
-            <Stack direction="column" spacing={2}>
-                {/*<K8sContext containerK8sContext={containerK8sContext}/>*/}
-                <hr/>
-                <VClusterCreate
-                    createUIVC={createUIVC}
-                    namespaces={namespaces}/>
-                <VClusterList
-                    deleteUIVC={deleteUIVC}
-                    pauseUIVC={pauseUIVC}
-                    resumeUIVC={resumeUIVC}
-                    disconnectUIVC={disconnectUIVC}
-                    connectUIVC={connectUIVC}
-                    vClusters={vClusters}
-                    currentK8sContext={currentK8sContext}
-                />
-            </Stack>
-        </>);
-    }
+    return <Stack direction="column" spacing={2}>
+        <div>Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better multi-tenancy and isolation than regular namespaces.</div>
+        <VClusterCreate
+            createUIVC={createUIVC}
+            namespaces={namespaces}/>
+        <VClusterList
+            deleteUIVC={deleteUIVC}
+            pauseUIVC={pauseUIVC}
+            resumeUIVC={resumeUIVC}
+            disconnectUIVC={disconnectUIVC}
+            connectUIVC={connectUIVC}
+            vClusters={vClusters}
+            currentK8sContext={currentK8sContext}
+        />
+    </Stack>;
 }
 
 export default VCluster;

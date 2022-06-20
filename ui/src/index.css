@@ -11,3 +11,18 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
+
+.MuiDataGrid-cell:focus {
+  outline: none !important;
+}
+
+/* Button size */
+.MuiDataGrid-cell .MuiButton-root {
+  color: white;
+  padding: 5px 10px;
+}
+
+.MuiDataGrid-cell .MuiButton-root > span {
+  margin-right: 5px;
+  margin-left: 0;
+}

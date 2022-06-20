@@ -29,7 +29,7 @@ export default function VClusterList(props) {
                 startIcon={<PauseIcon/>}
                 color="warning"
                 type="submit">
-                Pause &nbsp;&nbsp;&nbsp;
+                Pause
             </Button>
         }
     }
@@ -42,7 +42,7 @@ export default function VClusterList(props) {
                 startIcon={<CloudOffIcon/>}
                 color="warning"
                 type="submit">
-                Disconnect &nbsp;&nbsp;&nbsp;
+                Disconnect
             </Button>
         } else {
             return <Button
@@ -62,13 +62,13 @@ export default function VClusterList(props) {
     }
 
     const columns = [{
-        field: 'Name', headerName: 'Name', width: 150, headerAlign: 'left',
-    }, {
-        field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left',
+        field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left',
     }, {
         field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
     }, {
-        field: 'Age', headerName: 'Age', type: 'number', width: 150, headerAlign: 'left', renderCell: (vCluster) => (<>
+        field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left',
+    }, {
+        field: 'Age', headerName: 'Age', type: 'number', width: 100, headerAlign: 'left', renderCell: (vCluster) => (<>
             {convertSeconds(vCluster.row.Created)}
         </>)
     }, {
@@ -129,15 +129,14 @@ export default function VClusterList(props) {
                     border: 'none',
                 },
             }}
-            loading={props.vClusters.length === 0}
+            loading={!props.vClusters}
             getRowId={(row) => row.Name + ID_NAMESPACE_SEPARATOR + row.Namespace}
-            rows={props.vClusters}
+            rows={props.vClusters || []}
             columns={columns}
             pageSize={5}
             rowsPerPageOptions={[5]}
             checkboxSelection={false}
             disableSelectionOnClick={true}
         />
-
     </div>);
 }

@@ -1,4 +1,4 @@
-IMAGE?=tukobadnyanoba/vcluster-dd-extension
+IMAGE?=loftsh/vcluster-dd-extension
 TAG?=0.0.1
 
 BUILDER=buildx-multi-arch

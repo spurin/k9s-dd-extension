@@ -2,32 +2,12 @@ import React from "react";
 import CssBaseline from "@mui/material/CssBaseline";
 import {DockerMuiThemeProvider} from "@docker/docker-mui-theme";
 import VCluster from "./vcluster/Vcluster";
-import Branding from "./branding/Branding";
 import {Box, Stack} from "@mui/material";
 
 export default function App() {
-    const [show, setShow] = React.useState(false);
-    // Comment below line and get all the loggers working again
-    console.log = function () {
-    }
-    const handleClickCreateVC = () => {
-        setShow(true);
-    };
-
-    const handleHeaderClick = () => {
-        setShow(false);
-    };
-
-    let component
-    if (show) {
-        component = <VCluster/>;
-    } else {
-        component = <Branding handleClickCreateVC={handleClickCreateVC}/>;
-    }
-
     return (<DockerMuiThemeProvider>
         <CssBaseline/>
-        <Stack direction="column" spacing={2} onClick={handleHeaderClick}>
+        <Stack direction="column" spacing={2}>
             <Box
                 component="img"
                 sx={{
@@ -39,6 +19,6 @@ export default function App() {
                 }}
                 src="https://d33wubrfki0l68.cloudfront.net/0ba1c19e054b699c5642c768cdb3145123611f8b/0d4b0/images/vcluster-logo.svg"/>
         </Stack>
-        {component}
+        <VCluster/>
     </DockerMuiThemeProvider>);
 }

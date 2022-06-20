@@ -1,3 +1,0 @@
-services:
-  vcluster-dd-extension:
-    image: ${DESKTOP_PLUGIN_IMAGE}

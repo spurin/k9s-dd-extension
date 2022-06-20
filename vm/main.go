@@ -18,20 +18,19 @@ func main() {
 	if err != nil {
 		return
 	}
+
 	log.Printf("Starting listening on %s\n", socketPath)
 	router := echo.New()
 	router.HideBanner = true
-
 	startURL := ""
 
 	ln, err := listen(socketPath)
 	if err != nil {
 		log.Fatal(err)
 	}
+
 	router.Listener = ln
-
-	router.POST("/createKubeConfigFile", createKubeConfigFile)
-
+	router.POST("/store-kube-config", storeKubeConfig)
 	log.Fatal(router.Start(startURL))
 }
 
@@ -43,8 +42,8 @@ type Payload struct {
 	Data string `json:"data"`
 }
 
-// Store kubeconfig in the request in the container filesystem
-func createKubeConfigFile(ctx echo.Context) error {
+// storeKubeConfig stores the kubeconfig from the request in the container filesystem
+func storeKubeConfig(ctx echo.Context) error {
 	payload := &Payload{}
 	if err := ctx.Bind(payload); err != nil {
 		return err

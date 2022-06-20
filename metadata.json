@@ -1,7 +1,7 @@
 {
   "icon": "vcluster.svg",
   "vm": {
-    "composefile": "docker-compose.yaml",
+    "image": "${DESKTOP_PLUGIN_IMAGE}",
     "exposes": {
       "socket": "vcluster-dd-extension.sock"
     }
