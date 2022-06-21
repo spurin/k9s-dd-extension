@@ -17,7 +17,7 @@ export async function listVClusters(ddClient) {
 }
 
 // Create vcluster on docker-desktop kubernetes
-export async function createVCluster(ddClient, name, namespace, distro, chartVersion) {
+export async function createVCluster(ddClient, name, namespace, distro, chartVersion, values) {
     // vcluster create name -n namespace --distro k3s --chart-version 0.9.1 --values string
     let args = ["create", name]
 
@@ -36,7 +36,10 @@ export async function createVCluster(ddClient, name, namespace, distro, chartVer
         args.push("--chart-version")
         args.push(chartVersion)
     }
-
+    if(values){
+        args.push("--extra-values")
+        args.push(values)
+    }
     let output = await cli(ddClient, "vcluster", args);
     if (output.stderr) {
         console.log("[createVClusters] : ", output.stderr)

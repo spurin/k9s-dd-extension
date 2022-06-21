@@ -51,8 +51,8 @@ const VCluster = () => {
         return () => clearInterval(interval);
     }, [ddClient]);
 
-    const createUIVC = (name, namespace, distro, chartVersion) => {
-        createVCluster(ddClient, name, namespace, distro, chartVersion).then(isCreated => {
+    const createUIVC = (name, namespace, distro, chartVersion, values) => {
+        createVCluster(ddClient, name, namespace, distro, chartVersion, values).then(isCreated => {
             if (isCreated) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] create triggered successfully");
             } else {

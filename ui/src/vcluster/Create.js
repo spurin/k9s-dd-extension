@@ -44,7 +44,7 @@ storage:
 
     const createUIVC = (e) => {
         e.preventDefault();
-        props.createUIVC(name, namespace, distro, chartVersion)
+        props.createUIVC(name, namespace, distro, chartVersion, values)
         handleClose()
     };
 
