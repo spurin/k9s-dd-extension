@@ -4,7 +4,7 @@ import {DockerMuiThemeProvider} from "@docker/docker-mui-theme";
 import VCluster from "./vcluster/Vcluster";
 import {Box, Stack} from "@mui/material";
 
-export default function App() {
+export const App = () => {
     return (<DockerMuiThemeProvider>
         <CssBaseline/>
         <Stack direction="column" spacing={2}>

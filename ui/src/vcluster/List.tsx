@@ -1,5 +1,5 @@
 import * as React from 'react';
-import {DataGrid} from '@mui/x-data-grid';
+import {DataGrid, GridColDef} from '@mui/x-data-grid';
 import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
@@ -11,12 +11,23 @@ import {ID_NAMESPACE_SEPARATOR} from "../helper/constants";
 import {Stack} from "@mui/material";
 import {convertSeconds, getVClusterContextName} from "../helper/util";
 
-export default function VClusterList(props) {
-    const getPauseResumeButtons = (vCluster) => {
-        if (vCluster.row.Status === "Paused") {
+type Props = {
+    vClusters: undefined,
+    currentK8sContext: string,
+    pauseUIVC: (name: string, namespace: string) => void
+    resumeUIVC: (name: string, namespace: string) => void
+    deleteUIVC: (name: string, namespace: string) => void,
+    connectUIVC: (name: string, namespace: string) => void,
+    disconnectUIVC: (namespace: string, context: string) => void,
+};
+
+export const VClusterList = (props: Props) => {
+
+    const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
+        if (status === "Paused") {
             return <Button
                 variant="contained"
-                onClick={() => handleResume(vCluster)}
+                onClick={() => handleResume(name, namespace, status)}
                 startIcon={<PlayArrowIcon/>}
                 color="success"
                 type="submit">
@@ -25,7 +36,7 @@ export default function VClusterList(props) {
         } else {
             return <Button
                 variant="contained"
-                onClick={() => handlePause(vCluster)}
+                onClick={() => handlePause(name, namespace, status)}
                 startIcon={<PauseIcon/>}
                 color="warning"
                 type="submit">
@@ -34,11 +45,11 @@ export default function VClusterList(props) {
         }
     }
 
-    const getConnectDisconnectButtons = (vCluster) => {
-        if (isConnected(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Context)) {
+    const getConnectDisconnectButtons = (name: string, namespace: string, status: string, context: string) => {
+        if (isConnected(name, namespace, context)) {
             return <Button
                 variant="contained"
-                onClick={() => handleDisconnect(vCluster)}
+                onClick={() => handleDisconnect(name, namespace, context)}
                 startIcon={<CloudOffIcon/>}
                 color="warning"
                 type="submit">
@@ -47,28 +58,33 @@ export default function VClusterList(props) {
         } else {
             return <Button
                 variant="contained"
-                onClick={() => handleConnect(vCluster)}
+                onClick={() => handleConnect(name, namespace, status)}
                 startIcon={<CloudIcon/>}
                 color="success"
-                disabled={vCluster.row.Status !== 'Running'}
+                disabled={status !== 'Running'}
                 type="submit">
                 Connect
             </Button>
         }
     }
 
-    const isConnected = (name, namespace, context) => {
+    const isConnected = (name: string, namespace: string, context: string) => {
         return props.currentK8sContext === getVClusterContextName(name, namespace, context)
     }
 
-    const columns = [{
+    const columns: GridColDef[] = [{
         field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left',
     }, {
         field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
     }, {
         field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left',
     }, {
-        field: 'Age', headerName: 'Age', type: 'number', width: 100, headerAlign: 'left', renderCell: (vCluster) => (<>
+        field: 'Age',
+        headerName: 'Age',
+        type: 'number',
+        width: 100,
+        headerAlign: 'left',
+        renderCell: (vCluster) => (<>
             {convertSeconds(vCluster.row.Created)}
         </>)
     }, {
@@ -76,42 +92,42 @@ export default function VClusterList(props) {
         headerName: "Action",
         width: 400,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
-            {getPauseResumeButtons(vCluster)}
+            {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
             <Button
-                onClick={() => handleDelete(vCluster)}
+                onClick={() => handleDelete(vCluster.row.Name, vCluster.row.Namespace)}
                 variant="contained"
                 color="error"
                 startIcon={<DeleteIcon/>}
                 type="submit">
                 Delete
             </Button>
-            {getConnectDisconnectButtons(vCluster)}
+            {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
         </Stack>)
     }];
 
-    const handleDelete = (clickedVCluster) => {
-        props.deleteUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+    const handleDelete = (name: string, namespace: string) => {
+        props.deleteUIVC(name, namespace)
     };
 
-    const handlePause = (clickedVCluster) => {
-        if (clickedVCluster.row.Status !== 'Paused') {
-            props.pauseUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+    const handlePause = (name: string, namespace: string, status: string) => {
+        if (status !== 'Paused') {
+            props.pauseUIVC(name, namespace)
         }
     };
 
-    const handleConnect = (clickedVCluster) => {
-        if (clickedVCluster.row.Status === 'Running') {
-            props.connectUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+    const handleConnect = (name: string, namespace: string, status: string) => {
+        if (status === 'Running') {
+            props.connectUIVC(name, namespace)
         }
     };
 
-    const handleDisconnect = (clickedVCluster) => {
-        props.disconnectUIVC(clickedVCluster.row.Namespace, getVClusterContextName(clickedVCluster.row.Name, clickedVCluster.row.Namespace, clickedVCluster.row.Context))
+    const handleDisconnect = (name: string, namespace: string, context: string) => {
+        props.disconnectUIVC(namespace, getVClusterContextName(name, namespace, context))
     };
 
-    const handleResume = (clickedVCluster) => {
-        if (clickedVCluster.row.Status === 'Paused') {
-            props.resumeUIVC(clickedVCluster.row.Name, clickedVCluster.row.Namespace)
+    const handleResume = (name: string, namespace: string, status: string) => {
+        if (status === 'Paused') {
+            props.resumeUIVC(name, namespace)
         }
     };
 

@@ -1,5 +1,5 @@
 import Button from "@mui/material/Button";
-import React from "react";
+import React, {ChangeEvent} from "react";
 import CreateIcon from '@mui/icons-material/Create';
 import {
     Dialog,
@@ -13,7 +13,12 @@ import {
     TextField
 } from "@mui/material";
 
-export default function VClusterCreate(props) {
+type Props = {
+    namespaces: string[],
+    createUIVC: (name: string, namespace: string, distro: string, chartVersion: string, values: string) => void
+};
+
+export const VClusterCreate = (props: Props) => {
     const [open, setOpen] = React.useState(false);
     const [name, setName] = React.useState("");
     const [namespace, setNamespace] = React.useState("");
@@ -34,17 +39,17 @@ storage:
         setOpen(false);
     };
 
-    const handleNamespaceChange = (event) => {
+    const handleNamespaceChange = (event: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
         setNamespace(event.target.value);
     };
 
-    const handleDistroChange = (event) => {
+    const handleDistroChange = (event: ChangeEvent<HTMLSelectElement | HTMLInputElement | HTMLTextAreaElement>) => {
         setDistro(event.target.value);
     };
 
-    const createUIVC = (e) => {
-        e.preventDefault();
-        props.createUIVC(name, namespace, distro, chartVersion)
+    const createUIVC = (event: ChangeEvent<HTMLFormElement>) => {
+        event.preventDefault();
+        props.createUIVC(name, namespace, distro, chartVersion, values)
         handleClose()
     };
 
@@ -84,7 +89,7 @@ storage:
                             <MenuItem value="">
                                 <em>Create new</em>
                             </MenuItem>
-                            {props.namespaces.map((namespace) => (
+                            {props.namespaces.map((namespace: string) => (
                                 <MenuItem key={namespace} value={namespace}>
                                     {namespace}
                                 </MenuItem>
@@ -124,12 +129,7 @@ storage:
                             minRows={10}
                             placeholder={valuesDefault}
                             style={{width: 400}}
-                            variant="filled"
-                            margin="dense"
-                            id="values"
-                            label="Values"
-                            size="medium"
-                        />
+                            id="values"/>
                     </Stack>
                 </DialogContent>
                 <DialogActions>
