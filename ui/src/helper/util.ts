@@ -1,13 +1,10 @@
-import yamlToJson from "js-yaml";
-import {DockerDesktop} from "./constants";
-
 // Converts the seconds to hh:mm:ss format
-export const convertSeconds = function (date) {
+export const convertSeconds = (date: number) => {
     if (date) {
-        let seconds = Math.floor((new Date() - new Date(date)) / 1000);
+        let seconds = Math.floor((new Date().valueOf() - new Date(date).valueOf()) / 1000);
         seconds = Number(seconds);
-        const d = Math.floor(seconds / (3600*24));
-        const h = Math.floor(seconds % (3600*24) / 3600);
+        const d = Math.floor(seconds / (3600 * 24));
+        const h = Math.floor(seconds % (3600 * 24) / 3600);
         const m = Math.floor(seconds % 3600 / 60);
         const s = Math.floor(seconds % 60);
 
@@ -21,6 +18,6 @@ export const convertSeconds = function (date) {
 }
 
 // Converts into vCluster context format
-export const getVClusterContextName = (name, namespace, context) => {
+export const getVClusterContextName = (name: string, namespace: string, context: string) => {
     return "vcluster_" + name + "_" + namespace + "_" + context
 }

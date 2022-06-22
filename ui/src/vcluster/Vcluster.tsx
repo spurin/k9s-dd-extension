@@ -10,17 +10,18 @@ import {
     listNamespaces,
     listVClusters,
     pauseVCluster,
-    resumeVCluster, updateDockerDesktopK8sKubeConfig
+    resumeVCluster,
+    updateDockerDesktopK8sKubeConfig
 } from "../helper/cli";
-import VClusterList from "../vcluster/List";
-import VClusterCreate from "../vcluster/Create";
+import {VClusterList} from "./List";
+import {VClusterCreate} from "./Create";
 import {Stack} from "@mui/material";
 
-const client = createDockerDesktopClient();
+const ddClient = createDockerDesktopClient();
 
-async function refreshData(setCurrentK8sContext, setVClusters, setNamespaces) {
+const refreshData = async (setCurrentK8sContext: any, setVClusters: any, setNamespaces: any) => {
     try {
-        const result = await Promise.all([getCurrentK8sContext(client), listVClusters(client), listNamespaces(client)]);
+        const result = await Promise.all([getCurrentK8sContext(ddClient), listVClusters(ddClient), listNamespaces(ddClient)]);
         setCurrentK8sContext(result[0]);
         setVClusters(result[1]);
         setNamespaces(result[2]);
@@ -33,8 +34,7 @@ async function refreshData(setCurrentK8sContext, setVClusters, setNamespaces) {
 const VCluster = () => {
     const [vClusters, setVClusters] = React.useState(undefined);
     const [namespaces, setNamespaces] = React.useState([]);
-    const [currentK8sContext, setCurrentK8sContext] = React.useState([""]);
-    const ddClient = client;
+    const [currentK8sContext, setCurrentK8sContext] = React.useState("");
 
     useEffect(() => {
         (async () => {
@@ -49,9 +49,9 @@ const VCluster = () => {
 
         const interval = setInterval(() => refreshData(setCurrentK8sContext, setVClusters, setNamespaces), 5000);
         return () => clearInterval(interval);
-    }, [ddClient]);
+    }, []);
 
-    const createUIVC = (name, namespace, distro, chartVersion, values) => {
+    const createUIVC = (name: string, namespace: string, distro: string, chartVersion: string, values: string) => {
         createVCluster(ddClient, name, namespace, distro, chartVersion, values).then(isCreated => {
             if (isCreated) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] create triggered successfully");
@@ -61,7 +61,7 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] create failed : " + JSON.stringify(reason)));
     };
 
-    const deleteUIVC = (name, namespace) => {
+    const deleteUIVC = (name: string, namespace: string) => {
         deleteVCluster(ddClient, name, namespace).then(isDeleted => {
             if (isDeleted) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] delete triggered successfully");
@@ -71,7 +71,7 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] delete failed : " + JSON.stringify(reason)));
     };
 
-    const pauseUIVC = (name, namespace) => {
+    const pauseUIVC = (name: string, namespace: string) => {
         pauseVCluster(ddClient, name, namespace).then(isPaused => {
             if (isPaused) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] pause triggered successfully");
@@ -81,7 +81,7 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] pause failed : " + JSON.stringify(reason)));
     };
 
-    const resumeUIVC = (name, namespace) => {
+    const resumeUIVC = (name: string, namespace: string) => {
         resumeVCluster(ddClient, name, namespace).then(isResumed => {
             if (isResumed) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] resume triggered successfully");
@@ -91,7 +91,7 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] resume failed : " + JSON.stringify(reason)));
     };
 
-    const disconnectUIVC = (namespace, context) => {
+    const disconnectUIVC = (namespace: string, context: string) => {
         disconnectVCluster(ddClient, namespace, context).then(isDisconnected => {
             if (isDisconnected) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + "] disconnect triggered successfully");
@@ -101,7 +101,7 @@ const VCluster = () => {
         }).catch(reason => ddClient.desktopUI.toast.error("vcluster[" + namespace + "] disconnect failed : " + JSON.stringify(reason)));
     };
 
-    const connectUIVC = (name, namespace) => {
+    const connectUIVC = (name: string, namespace: string) => {
         connectVCluster(ddClient, name, namespace).then(isConnected => {
             if (isConnected) {
                 ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] connect triggered successfully");
@@ -115,7 +115,10 @@ const VCluster = () => {
     };
 
     return <Stack direction="column" spacing={2}>
-        <div>Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better multi-tenancy and isolation than regular namespaces.</div>
+        <div>Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
+            underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better
+            multi-tenancy and isolation than regular namespaces.
+        </div>
         <VClusterCreate
             createUIVC={createUIVC}
             namespaces={namespaces}/>
