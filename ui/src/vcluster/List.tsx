@@ -1,6 +1,5 @@
 import * as React from 'react';
 import {DataGrid, GridColDef} from '@mui/x-data-grid';
-import Button from "@mui/material/Button";
 import DeleteIcon from '@mui/icons-material/Delete';
 import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
@@ -10,6 +9,7 @@ import CloudIcon from '@mui/icons-material/Cloud';
 import {ID_NAMESPACE_SEPARATOR} from "../helper/constants";
 import {Stack} from "@mui/material";
 import {convertSeconds, getVClusterContextName} from "../helper/util";
+import AsyncButton from './AsyncButton/AsyncButton';
 
 type Props = {
     vClusters: undefined,
@@ -25,51 +25,51 @@ export const VClusterList = (props: Props) => {
 
     const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
         if (status === "Paused") {
-            return <Button
+            return <AsyncButton
                 variant="contained"
-                onClick={() => handleResume(name, namespace, status)}
+                onClickAsync={async () => await handleResume(name, namespace, status)}
                 startIcon={<PlayArrowIcon/>}
-                color="success"
-                type="submit">
+                color="success">
                 Resume
-            </Button>
+            </AsyncButton>
         } else {
-            return <Button
+            return <AsyncButton
                 variant="contained"
-                onClick={() => handlePause(name, namespace, status)}
+                onClickAsync={async () => await handlePause(name, namespace, status)}
                 startIcon={<PauseIcon/>}
-                color="warning"
-                type="submit">
+                color="warning">
                 Pause
-            </Button>
+            </AsyncButton>
         }
     }
 
     const getConnectDisconnectButtons = (name: string, namespace: string, status: string, context: string) => {
         if (isConnected(name, namespace, context)) {
-            return <Button
+            return <AsyncButton
                 variant="contained"
-                onClick={() => handleDisconnect(name, namespace, context)}
+                onClickAsync={async () =>
+                    await handleDisconnect(name, namespace, context)
+                }
                 startIcon={<CloudOffIcon/>}
-                color="warning"
-                type="submit">
+                color="warning">
                 Disconnect
-            </Button>
+            </AsyncButton>
         } else {
-            return <Button
+            return <AsyncButton
+                onClickAsync={async () => {
+                    await handleConnect(name, namespace, status)
+                }}
                 variant="contained"
-                onClick={() => handleConnect(name, namespace, status)}
                 startIcon={<CloudIcon/>}
                 color="success"
-                disabled={status !== 'Running'}
-                type="submit">
+                disabled={status !== 'Running'}>
                 Connect
-            </Button>
+            </AsyncButton>
         }
     }
 
     const isConnected = (name: string, namespace: string, context: string) => {
-        return props.currentK8sContext === getVClusterContextName(name, namespace, context)
+        return props.currentK8sContext === getVClusterContextName(name, namespace, context);
     }
 
     const columns: GridColDef[] = [{
@@ -93,41 +93,40 @@ export const VClusterList = (props: Props) => {
         width: 400,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
             {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
-            <Button
-                onClick={() => handleDelete(vCluster.row.Name, vCluster.row.Namespace)}
+            <AsyncButton
+                onClickAsync={async () => await handleDelete(vCluster.row.Name, vCluster.row.Namespace)}
                 variant="contained"
                 color="error"
-                startIcon={<DeleteIcon/>}
-                type="submit">
+                startIcon={<DeleteIcon/>}>
                 Delete
-            </Button>
+            </AsyncButton>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
         </Stack>)
     }];
 
-    const handleDelete = (name: string, namespace: string) => {
-        props.deleteUIVC(name, namespace)
+    const handleDelete = async (name: string, namespace: string) => {
+        await props.deleteUIVC(name, namespace);
     };
 
-    const handlePause = (name: string, namespace: string, status: string) => {
+    const handlePause = async (name: string, namespace: string, status: string) => {
         if (status !== 'Paused') {
-            props.pauseUIVC(name, namespace)
+            await props.pauseUIVC(name, namespace);
         }
     };
 
-    const handleConnect = (name: string, namespace: string, status: string) => {
+    const handleConnect = async (name: string, namespace: string, status: string) => {
         if (status === 'Running') {
-            props.connectUIVC(name, namespace)
+            await props.connectUIVC(name, namespace);
         }
     };
 
-    const handleDisconnect = (name: string, namespace: string, context: string) => {
-        props.disconnectUIVC(namespace, getVClusterContextName(name, namespace, context))
+    const handleDisconnect = async (name: string, namespace: string, context: string) => {
+        await props.disconnectUIVC(namespace, getVClusterContextName(name, namespace, context))
     };
 
-    const handleResume = (name: string, namespace: string, status: string) => {
+    const handleResume = async (name: string, namespace: string, status: string) => {
         if (status === 'Paused') {
-            props.resumeUIVC(name, namespace)
+            await props.resumeUIVC(name, namespace);
         }
     };
 

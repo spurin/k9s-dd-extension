@@ -1,7 +1,7 @@
-import Button from "@mui/material/Button";
 import React, {ChangeEvent} from "react";
 import CreateIcon from '@mui/icons-material/Create';
 import {
+    Button,
     Dialog,
     DialogActions,
     DialogContent,
@@ -12,6 +12,7 @@ import {
     TextareaAutosize,
     TextField
 } from "@mui/material";
+import AsyncButton from "./AsyncButton/AsyncButton";
 
 type Props = {
     namespaces: string[],
@@ -47,10 +48,15 @@ storage:
         setDistro(event.target.value);
     };
 
-    const createUIVC = (event: ChangeEvent<HTMLFormElement>) => {
+    const createUIVC = async (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
-        props.createUIVC(name, namespace, distro, chartVersion, values)
-        handleClose()
+        await props.createUIVC(name, namespace, distro, chartVersion, values);
+        setName("");
+        setDistro("");
+        setValues("");
+        setNamespace("");
+        setChartVersion("");
+        handleClose();
     };
 
     return <Stack direction="row" spacing={2}>
@@ -63,7 +69,7 @@ storage:
                     Create new vcluster
                 </DialogContentText>
             </DialogTitle>
-            <form noValidate onSubmit={createUIVC}>
+            <form noValidate>
                 <DialogContent>
                     <Stack direction="column" spacing={2}>
                         <TextField
@@ -136,19 +142,20 @@ storage:
                     <Button onClick={handleClose} color="error" variant="contained">
                         Cancel
                     </Button>
-                    <Button
-                        onClick={handleClose}
+                    <AsyncButton
                         color="primary"
                         variant="contained"
+                        onClickAsync={async (e) =>
+                            await createUIVC(e)
+                        }
                         disabled={name === ""}
                         type="submit">
                         Create
-                    </Button>
+                    </AsyncButton>
                 </DialogActions>
             </form>
         </Dialog>
-        <Button variant="contained" onClick={handleClickOpen}
-                startIcon={<CreateIcon/>}>
+        <Button variant="contained" onClick={handleClickOpen} startIcon={<CreateIcon/>}>
             Create new vcluster
         </Button>
     </Stack>
