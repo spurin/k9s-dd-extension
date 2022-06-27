@@ -22,7 +22,7 @@ export const listVClusters = async (ddClient: v1.DockerDesktopClient) => {
 }
 
 // Create vcluster on docker-desktop kubernetes
-export const createVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string, distro: string, chartVersion: string, values: string) => {
+export const createVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string, distro: string, chartVersion: string, values: string, isUpgrade?: boolean) => {
     // vcluster create name -n namespace --distro k3s --chart-version 0.9.1 --values string
     let args = ["create", name];
 
@@ -49,6 +49,10 @@ export const createVCluster = async (ddClient: v1.DockerDesktopClient, name: str
         }
     }
     args.push("--connect=false");
+
+    if (isUpgrade) {
+        args.push("--upgrade")
+    }
 
     let output = await cli(ddClient, "vcluster", args);
 

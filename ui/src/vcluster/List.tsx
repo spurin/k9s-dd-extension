@@ -5,9 +5,20 @@ import PauseIcon from '@mui/icons-material/Pause';
 import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import CloudOffIcon from '@mui/icons-material/CloudOff';
 import CloudIcon from '@mui/icons-material/Cloud';
+import UpgradeIcon from '@mui/icons-material/Upgrade';
 
 import {ID_NAMESPACE_SEPARATOR} from "../helper/constants";
-import {Stack} from "@mui/material";
+import {
+    Button,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    Stack,
+    TextareaAutosize,
+    TextField
+} from "@mui/material";
 import {convertSeconds, getVClusterContextName} from "../helper/util";
 import AsyncButton from './AsyncButton/AsyncButton';
 
@@ -17,11 +28,56 @@ type Props = {
     pauseUIVC: (name: string, namespace: string) => void
     resumeUIVC: (name: string, namespace: string) => void
     deleteUIVC: (name: string, namespace: string) => void,
+    upgradeUIVC: (name: string, namespace: string, chartVersion: string, values: string) => void,
     connectUIVC: (name: string, namespace: string) => void,
     disconnectUIVC: (namespace: string, context: string) => void,
 };
 
 export const VClusterList = (props: Props) => {
+    const [chartVersion, setChartVersion] = React.useState("");
+    const [values, setValues] = React.useState("");
+    const [edit, setEdit] = React.useState({
+        open: false,
+        name: "",
+        namespace: ""
+    });
+
+    let valuesDefault = `# Additional helm values for the virtual cluster
+storage:
+  size: 5Gi
+`
+    const handleUpgrade = async (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        await props.upgradeUIVC(edit.name, edit.namespace, chartVersion, values);
+        setValues("");
+        setChartVersion("");
+        handleClose();
+    };
+
+    const handleClickOpen = (name: string, namespace: string) => {
+        setEdit({
+            open: true,
+            name: name,
+            namespace: namespace
+        });
+    };
+
+    const handleClose = () => {
+        setEdit({
+            ...edit,
+            open: false,
+            name: "",
+            namespace: ""
+        });
+    };
+
+    const getUpgradeButton = (name: string, namespace: string) => {
+        return <Button variant="contained" onClick={() => {
+            return handleClickOpen(name, namespace)
+        }} startIcon={<UpgradeIcon/>}>
+            Upgrade
+        </Button>
+    }
 
     const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
         if (status === "Paused") {
@@ -73,11 +129,11 @@ export const VClusterList = (props: Props) => {
     }
 
     const columns: GridColDef[] = [{
-        field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left',
+        field: 'Name', headerName: 'Name', width: 100, headerAlign: 'left',
     }, {
-        field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left',
+        field: 'Status', headerName: 'Status', width: 100, headerAlign: 'left',
     }, {
-        field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left',
+        field: 'Namespace', headerName: 'Namespace', width: 100, headerAlign: 'left',
     }, {
         field: 'Age',
         headerName: 'Age',
@@ -90,7 +146,7 @@ export const VClusterList = (props: Props) => {
     }, {
         field: "action",
         headerName: "Action",
-        width: 400,
+        width: 450,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
             {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
             <AsyncButton
@@ -101,6 +157,7 @@ export const VClusterList = (props: Props) => {
                 Delete
             </AsyncButton>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
+            {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}
         </Stack>)
     }];
 
@@ -131,6 +188,77 @@ export const VClusterList = (props: Props) => {
     };
 
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>
+        <Stack direction="row" spacing={2}>
+            <Dialog
+                open={edit.open}
+                onClose={handleClose}
+                aria-labelledby="form-dialog-title">
+                <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
+                    <DialogContentText align={"center"}>
+                        Upgrade vcluster
+                    </DialogContentText>
+                </DialogTitle>
+                <form noValidate>
+                    <DialogContent>
+                        <Stack direction="column" spacing={2}>
+                            <TextField
+                                value={edit.name}
+                                variant="filled"
+                                margin="dense"
+                                id="name"
+                                label="Name"
+                                type="text"
+                                size="medium"
+                                fullWidth
+                                required/>
+                            <TextField
+                                value={edit.namespace}
+                                variant="filled"
+                                margin="dense"
+                                id="namespace"
+                                label="Namespace"
+                                type="text"
+                                size="medium"
+                                fullWidth
+                                required/>
+                            <TextField
+                                value={chartVersion}
+                                onChange={(event) => setChartVersion(event.target.value)}
+                                variant="filled"
+                                margin="dense"
+                                id="chartVersion"
+                                label="Chart Version"
+                                type="text"
+                                size="medium"
+                                fullWidth
+                            />
+                            <TextareaAutosize
+                                value={values}
+                                onChange={(event) => setValues(event.target.value)}
+                                minRows={10}
+                                placeholder={valuesDefault}
+                                style={{width: 400}}
+                                id="values"/>
+                        </Stack>
+                    </DialogContent>
+                    <DialogActions>
+                        <Button onClick={handleClose} color="error" variant="contained">
+                            Cancel
+                        </Button>
+                        <AsyncButton
+                            color="primary"
+                            variant="contained"
+                            onClickAsync={async (e) =>
+                                await handleUpgrade(e)
+                            }
+                            disabled={edit.name === ""}
+                            type="submit">
+                            Upgrade
+                        </AsyncButton>
+                    </DialogActions>
+                </form>
+            </Dialog>
+        </Stack>
         <DataGrid
             sx={{
                 padding: "10px",
