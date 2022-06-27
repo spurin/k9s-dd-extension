@@ -67,6 +67,20 @@ const VCluster = () => {
         }
     };
 
+    const upgradeUIVC = async (name: string, namespace: string, chartVersion: string, values: string) => {
+        try {
+            // Using the same createVCluster function for the upgrade operation. Distro upgrade is not supported
+            const isUpgraded = await createVCluster(ddClient, name, namespace, "", chartVersion, values, true);
+            if (isUpgraded) {
+                ddClient.desktopUI.toast.success("vcluster[" + namespace + ":" + name + "] upgrade triggered successfully");
+            } else {
+                ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] upgrade failed");
+            }
+        } catch (err) {
+            ddClient.desktopUI.toast.error("vcluster[" + namespace + ":" + name + "] upgrade failed : " + JSON.stringify(err));
+        }
+    };
+
     const deleteUIVC = async (name: string, namespace: string) => {
         try {
             const isDeleted = await deleteVCluster(ddClient, name, namespace);
@@ -142,6 +156,7 @@ const VCluster = () => {
             createUIVC={createUIVC}
             namespaces={namespaces}/>
         <VClusterList
+            upgradeUIVC={upgradeUIVC}
             deleteUIVC={deleteUIVC}
             pauseUIVC={pauseUIVC}
             resumeUIVC={resumeUIVC}
