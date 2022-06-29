@@ -101,20 +101,26 @@ storage:
     };
 
     const getUpgradeButton = (name: string, namespace: string) => {
-        return <Tooltip title={"Upgrade the virtual cluster"}><Button variant="contained" onClick={() => {
-            return handleEditOpen(name, namespace)
-        }} startIcon={<UpgradeIcon/>}>
+        return <Tooltip title={"Upgrade the virtual cluster"}>
+            <span>
+                <Button variant="contained" onClick={() => {
+                    return handleEditOpen(name, namespace)
+                }} startIcon={<UpgradeIcon/>}>
             Upgrade
-        </Button></Tooltip>
+            </Button>
+            </span>
+        </Tooltip>
     }
 
     const getDeleteButton = (name: string, namespace: string) => {
         return <Tooltip title={"Delete the virtual cluster"}>
-            <Button variant="contained" color="error" onClick={() => {
-                return handleDeleteOpen(name, namespace)
-            }} startIcon={<DeleteIcon/>}>
+           <span>
+               <Button variant="contained" color="error" onClick={() => {
+                   return handleDeleteOpen(name, namespace)
+               }} startIcon={<DeleteIcon/>}>
                 Delete
             </Button>
+           </span>
         </Tooltip>
     }
 
