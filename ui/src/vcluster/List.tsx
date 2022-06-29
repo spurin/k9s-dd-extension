@@ -17,10 +17,11 @@ import {
     DialogTitle,
     Stack,
     TextareaAutosize,
-    TextField, Tooltip
+    TextField,
+    Tooltip
 } from "@mui/material";
 import {convertSeconds, getVClusterContextName} from "../helper/util";
-import AsyncButton from './AsyncButton/AsyncButton';
+import {AsyncButton} from './AsyncButton/AsyncButton';
 
 type Props = {
     vClusters: undefined,
@@ -102,7 +103,7 @@ storage:
     const getUpgradeButton = (name: string, namespace: string) => {
         return <Tooltip title={"Upgrade the virtual cluster"}><Button variant="contained" onClick={() => {
             return handleEditOpen(name, namespace)
-        }} startIcon={<UpgradeIcon/>} >
+        }} startIcon={<UpgradeIcon/>}>
             Upgrade
         </Button></Tooltip>
     }

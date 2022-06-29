@@ -24,7 +24,7 @@ interface AsyncButtonState {
     loading: boolean;
 }
 
-export default class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButtonState> {
+export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButtonState> {
     mounted: boolean = true;
     state: AsyncButtonState = {
         loading: false
