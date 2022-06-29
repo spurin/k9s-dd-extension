@@ -1,6 +1,6 @@
 {
   "name": "@loftsh/vcluster-dd-extension",
-  "version": "0.1.0",
+  "version": "v0.0.1",
   "private": true,
   "dependencies": {
     "@docker/docker-mui-theme": "^0.0.4",
