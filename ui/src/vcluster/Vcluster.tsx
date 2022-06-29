@@ -16,7 +16,7 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Stack} from "@mui/material";
+import {Box, Stack, Typography} from "@mui/material";
 
 const ddClient = createDockerDesktopClient();
 
@@ -147,11 +147,16 @@ const VCluster = () => {
     };
 
     return <Stack direction="column" spacing={2}>
-        <div>
-            Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
-            underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better
-            multi-tenancy and isolation than regular namespaces.
-        </div>
+        <Box sx={{
+            marginBottom: "15px",
+            textAlign: "center"
+        }}>
+            <Typography>
+                Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
+                underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better
+                multi-tenancy and isolation than regular namespaces.
+            </Typography>
+        </Box>
         <VClusterCreate
             createUIVC={createUIVC}
             namespaces={namespaces}/>
