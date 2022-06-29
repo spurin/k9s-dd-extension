@@ -6,6 +6,11 @@ const cli = async (ddClient: v1.DockerDesktopClient, command: string, args: stri
     return ddClient.extension.vm?.cli.exec(command, args);
 }
 
+// Common function to call host.cli.exec
+const hostCli = async (ddClient: v1.DockerDesktopClient, command: string, args: string[]) => {
+    return ddClient.extension.host?.cli.exec(command, args);
+}
+
 const storeValuesFileInContainer = async (ddClient: v1.DockerDesktopClient, values: string) => {
     return ddClient.extension.vm?.service?.post("/store-values", {data: values});
 }
@@ -85,14 +90,28 @@ export const pauseVCluster = async (ddClient: v1.DockerDesktopClient, name: stri
     return true;
 }
 
+const getVClusterContextName = (vClusterName: string, vClusterNamespace: string, currentContext: string) => {
+    return "vcluster_" + vClusterName + "_" + vClusterNamespace + "_" + currentContext
+}
+
 // Deletes the vcluster
 export const deleteVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
     // vcluster delete name -n namespace
-    let output = await cli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
+    let output = await hostCli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
     if (output?.stderr) {
         console.log("[deleteVCluster] : ", output.stderr);
         return false;
     }
+    // const contextName = getVClusterContextName(name, namespace, DockerDesktop)
+    // try {
+    //     const result = await Promise.all([
+    //         hostCli(ddClient, "kubectl", ["config", "unset", "users." + contextName]),
+    //         hostCli(ddClient, "kubectl", ["config", "unset", "contexts." + contextName]),
+    //         hostCli(ddClient, "kubectl", ["config", "unset", "clusters." + contextName])]);
+    //     console.log(result)
+    // } catch (err) {
+    //     console.log(err);
+    // }
     return true;
 }
 
@@ -119,7 +138,7 @@ export const listNamespaces = async (ddClient: v1.DockerDesktopClient) => {
 // noinspection JSUnusedLocalSymbols
 export const disconnectVCluster = async (ddClient: v1.DockerDesktopClient, namespace: string, context: string) => {
     // vcluster disconnect --namespace namespace --context context
-    const disconnect = await ddClient.extension.host?.cli.exec("vcluster", ["disconnect", "-n", namespace]);
+    const disconnect = await hostCli(ddClient, "vcluster", ["disconnect", "-n", namespace])
     if (disconnect?.stderr) {
         console.log("[disconnectVCluster] : ", disconnect.stderr);
         return false;
@@ -131,7 +150,7 @@ export const disconnectVCluster = async (ddClient: v1.DockerDesktopClient, names
 // Runs `vcluster connect` command on host and changes the context is changed internally.
 export const connectVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
     // vcluster connect name -n namespace
-    const connect = await ddClient.extension.host?.cli.exec("vcluster", ["connect", name, "-n", namespace, "--context", DockerDesktop]);
+    const connect = await hostCli(ddClient, "vcluster", ["connect", name, "-n", namespace, "--context", DockerDesktop]);
     if (connect?.stderr) {
         console.log("[connectVCluster] : ", connect.stderr);
         return false;
@@ -145,7 +164,7 @@ export const connectVCluster = async (ddClient: v1.DockerDesktopClient, name: st
 // all the combinations of commands fail
 export const updateDockerDesktopK8sKubeConfig = async (ddClient: v1.DockerDesktopClient) => {
     // kubectl config view --raw
-    let kubeConfig = await ddClient.extension.host?.cli.exec("kubectl", ["config", "view", "--raw", "--minify", "--context", DockerDesktop]);
+    let kubeConfig = await hostCli(ddClient, "kubectl", ["config", "view", "--raw", "--minify", "--context", DockerDesktop]);
     if (kubeConfig?.stderr) {
         return false;
     }
@@ -163,7 +182,7 @@ export const updateDockerDesktopK8sKubeConfig = async (ddClient: v1.DockerDeskto
 // Retrieves host's current k8s context
 export const getCurrentK8sContext = async (ddClient: v1.DockerDesktopClient) => {
     // kubectl config view -o jsonpath='{.current-context}'
-    let output = await ddClient.extension.host?.cli.exec("kubectl", ["config", "view", "-o", "jsonpath='{.current-context}'"]);
+    let output = await hostCli(ddClient, "kubectl", ["config", "view", "-o", "jsonpath='{.current-context}'"]);
     if (output?.stderr) {
         console.log("[getCurrentK8sContext] : ", output.stderr);
         return {};
