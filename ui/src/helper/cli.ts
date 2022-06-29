@@ -90,9 +90,9 @@ export const pauseVCluster = async (ddClient: v1.DockerDesktopClient, name: stri
     return true;
 }
 
-const getVClusterContextName = (vClusterName: string, vClusterNamespace: string, currentContext: string) => {
-    return "vcluster_" + vClusterName + "_" + vClusterNamespace + "_" + currentContext
-}
+// const getVClusterContextName = (vClusterName: string, vClusterNamespace: string, currentContext: string) => {
+//     return "vcluster_" + vClusterName + "_" + vClusterNamespace + "_" + currentContext
+// }
 
 // Deletes the vcluster
 export const deleteVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
