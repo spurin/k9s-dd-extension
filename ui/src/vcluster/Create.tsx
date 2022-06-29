@@ -12,7 +12,7 @@ import {
     TextareaAutosize,
     TextField
 } from "@mui/material";
-import AsyncButton from "./AsyncButton/AsyncButton";
+import {AsyncButton} from "./AsyncButton/AsyncButton";
 
 type Props = {
     namespaces: string[],

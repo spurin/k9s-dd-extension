@@ -16,7 +16,8 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Box, Stack, Typography} from "@mui/material";
+import {Box, Stack} from "@mui/material";
+import Typography from '@mui/material/Typography';
 
 const ddClient = createDockerDesktopClient();
 
@@ -32,7 +33,7 @@ const refreshData = async (setCurrentK8sContext: any, setVClusters: any, setName
     }
 }
 
-const VCluster = () => {
+export const VCluster = () => {
     const [vClusters, setVClusters] = React.useState(undefined);
     const [namespaces, setNamespaces] = React.useState([]);
     const [currentK8sContext, setCurrentK8sContext] = React.useState("");
@@ -134,7 +135,7 @@ const VCluster = () => {
         try {
             const isDisconnected = await disconnectVCluster(ddClient, namespace, context);
             if (isDisconnected) {
-                ddClient.desktopUI.toast.success("vcluster disconnect successful");
+                ddClient.desktopUI.toast.success("vcluster disconnected successfully");
             } else {
                 ddClient.desktopUI.toast.error("vcluster disconnect failed");
             }
@@ -149,7 +150,7 @@ const VCluster = () => {
         try {
             const isConnected = await connectVCluster(ddClient, name, namespace);
             if (isConnected) {
-                ddClient.desktopUI.toast.success("vcluster connect successful");
+                ddClient.desktopUI.toast.success("vcluster connected successfully");
             } else {
                 ddClient.desktopUI.toast.error("vcluster connect failed");
             }
@@ -186,5 +187,3 @@ const VCluster = () => {
         />
     </Stack>;
 }
-
-export default VCluster;

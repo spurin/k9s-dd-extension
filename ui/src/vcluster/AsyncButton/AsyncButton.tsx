@@ -24,7 +24,7 @@ interface AsyncButtonState {
     loading: boolean;
 }
 
-export default class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButtonState> {
+export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButtonState> {
     mounted: boolean = true;
     state: AsyncButtonState = {
         loading: false
@@ -62,11 +62,12 @@ export default class AsyncButton extends React.PureComponent<AsyncButtonProps, A
         }
 
         const button = <LoadingButton {...without(this.props, ["onClickAsync"])}
-                                      loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})} className={classNames.join(" ")}>
+                                      loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
+                                      className={classNames.join(" ")}>
             <span className={"async-button-content"}>{this.props.children}</span>
         </LoadingButton>;
         if (this.props.tooltip) {
-            return <Tooltip title={this.props.tooltip}>{button}</Tooltip>
+            return <Tooltip title={this.props.tooltip}><span>{button}</span></Tooltip>
         }
         return button;
     }
