@@ -121,6 +121,7 @@ storage:
         if (status === "Paused") {
             return <AsyncButton
                 variant="contained"
+                style={{"width": "90px"}}
                 tooltip={"Start the virtual cluster"}
                 onClickAsync={async () => await handleResume(name, namespace, status)}
                 startIcon={<PlayArrowIcon/>}
@@ -130,6 +131,7 @@ storage:
         } else {
             return <AsyncButton
                 variant="contained"
+                style={{"width": "90px"}}
                 tooltip={"Stop the virtual cluster"}
                 onClickAsync={async () => await handlePause(name, namespace, status)}
                 startIcon={<PauseIcon/>}
@@ -143,6 +145,7 @@ storage:
         if (isConnected(name, namespace, context)) {
             return <AsyncButton
                 variant="contained"
+                style={{"width": "110px"}}
                 tooltip={"Return to docker-desktop kube context"}
                 onClickAsync={async () =>
                     await handleDisconnect(name, namespace, context)
@@ -158,6 +161,7 @@ storage:
                 }}
                 tooltip={"Switch current kube-context to virtual cluster"}
                 variant="contained"
+                style={{"width": "110px"}}
                 startIcon={<CloudIcon/>}
                 color="success"
                 disabled={status !== 'Running'}>
@@ -188,7 +192,7 @@ storage:
     }, {
         field: "action",
         headerName: "Action",
-        width: 450,
+        width: 420,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1} style={{outline: "none"}}>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
             {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}

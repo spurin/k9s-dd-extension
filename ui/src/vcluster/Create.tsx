@@ -27,7 +27,7 @@ export const VClusterCreate = (props: Props) => {
     const [chartVersion, setChartVersion] = React.useState("");
     const [values, setValues] = React.useState("");
 
-    let valuesDefault = `# Additional helm values for the virtual cluster
+    let valuesDefault = `# (Optional) Additional helm values
 storage:
   size: 5Gi
 `
@@ -87,7 +87,7 @@ storage:
                         <TextField
                             id="outlined-select-namespace"
                             select
-                            label="Namespace"
+                            label="(Optional) Namespace"
                             size="medium"
                             value={namespace}
                             onChange={handleNamespaceChange}
@@ -104,7 +104,7 @@ storage:
                         <TextField
                             id="outlined-select-distro"
                             select
-                            label="Distro"
+                            label="(Optional) Distro"
                             size="medium"
                             value={distro}
                             onChange={handleDistroChange}
@@ -124,7 +124,7 @@ storage:
                             variant="filled"
                             margin="dense"
                             id="chartVersion"
-                            label="Chart Version"
+                            label="(Optional) Chart Version"
                             type="text"
                             size="medium"
                             fullWidth

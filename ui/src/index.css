@@ -16,6 +16,10 @@ code {
     monospace;
 }
 
+.MuiDataGrid-cell {
+  outline: none !important;
+}
+
 .MuiDataGrid-cell .MuiButton-root > span {
   margin-right: 5px;
   margin-left: 0;

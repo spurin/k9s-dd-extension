@@ -165,7 +165,7 @@ const VCluster = () => {
             marginBottom: "15px",
             textAlign: "center"
         }}>
-            <Typography>
+            <Typography style={{"fontWeight": "500", "fontSize": "15px"}}>
                 Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
                 underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better
                 multi-tenancy and isolation than regular namespaces.
