@@ -36,8 +36,9 @@ type Props = {
 export const VClusterList = (props: Props) => {
     const [chartVersion, setChartVersion] = React.useState("");
     const [values, setValues] = React.useState("");
-    const [edit, setEdit] = React.useState({
-        open: false,
+    const [state, setState] = React.useState({
+        editOpen: false,
+        deleteOpen: false,
         name: "",
         namespace: ""
     });
@@ -48,24 +49,51 @@ storage:
 `
     const handleUpgrade = async (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
-        await props.upgradeUIVC(edit.name, edit.namespace, chartVersion, values);
+        await props.upgradeUIVC(state.name, state.namespace, chartVersion, values);
         setValues("");
         setChartVersion("");
-        handleClose();
+        handleEditClose();
     };
 
-    const handleClickOpen = (name: string, namespace: string) => {
-        setEdit({
-            open: true,
+    const handleDelete = async (event: React.MouseEvent<HTMLElement>) => {
+        event.preventDefault();
+        await props.deleteUIVC(state.name, state.namespace);
+        handleDeleteClose();
+    };
+
+    const handleEditOpen = (name: string, namespace: string) => {
+        setState({
+            editOpen: true,
+            deleteOpen: false,
             name: name,
             namespace: namespace
         });
     };
 
-    const handleClose = () => {
-        setEdit({
-            ...edit,
-            open: false,
+    const handleDeleteOpen = (name: string, namespace: string) => {
+        setState({
+            editOpen: false,
+            deleteOpen: true,
+            name: name,
+            namespace: namespace
+        });
+    };
+
+    const handleDeleteClose = () => {
+        setState({
+            ...state,
+            editOpen: false,
+            deleteOpen: false,
+            name: "",
+            namespace: ""
+        });
+    };
+
+    const handleEditClose = () => {
+        setState({
+            ...state,
+            editOpen: false,
+            deleteOpen: false,
             name: "",
             namespace: ""
         });
@@ -73,9 +101,17 @@ storage:
 
     const getUpgradeButton = (name: string, namespace: string) => {
         return <Button variant="contained" onClick={() => {
-            return handleClickOpen(name, namespace)
+            return handleEditOpen(name, namespace)
         }} startIcon={<UpgradeIcon/>}>
             Upgrade
+        </Button>
+    }
+
+    const getDeleteButton = (name: string, namespace: string) => {
+        return <Button variant="contained" color="error" onClick={() => {
+            return handleDeleteOpen(name, namespace)
+        }} startIcon={<DeleteIcon/>}>
+            Delete
         </Button>
     }
 
@@ -149,21 +185,11 @@ storage:
         width: 450,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
             {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
-            <AsyncButton
-                onClickAsync={async () => await handleDelete(vCluster.row.Name, vCluster.row.Namespace)}
-                variant="contained"
-                color="error"
-                startIcon={<DeleteIcon/>}>
-                Delete
-            </AsyncButton>
+            {getDeleteButton(vCluster.row.Name, vCluster.row.Namespace)}
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
             {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}
         </Stack>)
     }];
-
-    const handleDelete = async (name: string, namespace: string) => {
-        await props.deleteUIVC(name, namespace);
-    };
 
     const handlePause = async (name: string, namespace: string, status: string) => {
         if (status !== 'Paused') {
@@ -189,9 +215,40 @@ storage:
 
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>
         <Stack direction="row" spacing={2}>
+
             <Dialog
-                open={edit.open}
-                onClose={handleClose}
+                open={state.deleteOpen}
+                onClose={handleDeleteClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    Delete vcluster
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        Are you sure to delete <i>{state.name}</i> cluster
+                        from <i>{state.namespace}</i>?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={handleDeleteClose}>Cancel</Button>
+                    <AsyncButton
+                        color="error"
+                        variant="contained"
+                        onClickAsync={async (e) =>
+                            await handleDelete(e)
+                        }
+                        type="submit">
+                        Delete
+                    </AsyncButton>
+                </DialogActions>
+            </Dialog>
+        </Stack>
+        <Stack direction="row" spacing={2}>
+            <Dialog
+                open={state.editOpen}
+                onClose={handleEditClose}
                 aria-labelledby="form-dialog-title">
                 <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
                     <DialogContentText align={"center"}>
@@ -202,7 +259,7 @@ storage:
                     <DialogContent>
                         <Stack direction="column" spacing={2}>
                             <TextField
-                                value={edit.name}
+                                value={state.name}
                                 variant="filled"
                                 margin="dense"
                                 id="name"
@@ -212,7 +269,7 @@ storage:
                                 fullWidth
                                 required/>
                             <TextField
-                                value={edit.namespace}
+                                value={state.namespace}
                                 variant="filled"
                                 margin="dense"
                                 id="namespace"
@@ -242,7 +299,7 @@ storage:
                         </Stack>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleClose} color="error" variant="contained">
+                        <Button onClick={handleEditClose} color="error" variant="contained">
                             Cancel
                         </Button>
                         <AsyncButton
@@ -251,7 +308,7 @@ storage:
                             onClickAsync={async (e) =>
                                 await handleUpgrade(e)
                             }
-                            disabled={edit.name === ""}
+                            disabled={state.name === ""}
                             type="submit">
                             Upgrade
                         </AsyncButton>
