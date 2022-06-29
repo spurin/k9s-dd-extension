@@ -1,5 +1,5 @@
 import React from "react";
-import {ButtonBaseProps} from "@mui/material";
+import {ButtonBaseProps, Tooltip} from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 
 const without = (props: any, keys: string[]) => {
@@ -15,6 +15,7 @@ const without = (props: any, keys: string[]) => {
 
 export interface AsyncButtonProps extends ButtonBaseProps {
     onClickAsync?: (e: React.MouseEvent<HTMLElement>) => Promise<any>;
+    tooltip?: string;
     variant?: string;
     startIcon?: any;
 }
@@ -52,7 +53,21 @@ export default class AsyncButton extends React.PureComponent<AsyncButtonProps, A
             }, 400);
         };
 
-        return <LoadingButton {...without(this.props, ["onClickAsync"])}
-                              loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})} />
+        const classNames = ["async-button"];
+        if (this.props.className) {
+            classNames.push(this.props.className);
+        }
+        if (this.state.loading) {
+            classNames.push("async-button-loading");
+        }
+
+        const button = <LoadingButton {...without(this.props, ["onClickAsync"])}
+                                      loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})} className={classNames.join(" ")}>
+            <span className={"async-button-content"}>{this.props.children}</span>
+        </LoadingButton>;
+        if (this.props.tooltip) {
+            return <Tooltip title={this.props.tooltip}>{button}</Tooltip>
+        }
+        return button;
     }
 }

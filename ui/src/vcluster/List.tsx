@@ -17,7 +17,7 @@ import {
     DialogTitle,
     Stack,
     TextareaAutosize,
-    TextField
+    TextField, Tooltip
 } from "@mui/material";
 import {convertSeconds, getVClusterContextName} from "../helper/util";
 import AsyncButton from './AsyncButton/AsyncButton';
@@ -100,25 +100,28 @@ storage:
     };
 
     const getUpgradeButton = (name: string, namespace: string) => {
-        return <Button variant="contained" onClick={() => {
+        return <Tooltip title={"Upgrade the virtual cluster"}><Button variant="contained" onClick={() => {
             return handleEditOpen(name, namespace)
-        }} startIcon={<UpgradeIcon/>}>
+        }} startIcon={<UpgradeIcon/>} >
             Upgrade
-        </Button>
+        </Button></Tooltip>
     }
 
     const getDeleteButton = (name: string, namespace: string) => {
-        return <Button variant="contained" color="error" onClick={() => {
-            return handleDeleteOpen(name, namespace)
-        }} startIcon={<DeleteIcon/>}>
-            Delete
-        </Button>
+        return <Tooltip title={"Delete the virtual cluster"}>
+            <Button variant="contained" color="error" onClick={() => {
+                return handleDeleteOpen(name, namespace)
+            }} startIcon={<DeleteIcon/>}>
+                Delete
+            </Button>
+        </Tooltip>
     }
 
     const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
         if (status === "Paused") {
             return <AsyncButton
                 variant="contained"
+                tooltip={"Start the virtual cluster"}
                 onClickAsync={async () => await handleResume(name, namespace, status)}
                 startIcon={<PlayArrowIcon/>}
                 color="success">
@@ -127,6 +130,7 @@ storage:
         } else {
             return <AsyncButton
                 variant="contained"
+                tooltip={"Stop the virtual cluster"}
                 onClickAsync={async () => await handlePause(name, namespace, status)}
                 startIcon={<PauseIcon/>}
                 color="warning">
@@ -139,6 +143,7 @@ storage:
         if (isConnected(name, namespace, context)) {
             return <AsyncButton
                 variant="contained"
+                tooltip={"Return to docker-desktop kube context"}
                 onClickAsync={async () =>
                     await handleDisconnect(name, namespace, context)
                 }
@@ -151,6 +156,7 @@ storage:
                 onClickAsync={async () => {
                     await handleConnect(name, namespace, status)
                 }}
+                tooltip={"Switch current kube-context to virtual cluster"}
                 variant="contained"
                 startIcon={<CloudIcon/>}
                 color="success"
@@ -165,7 +171,7 @@ storage:
     }
 
     const columns: GridColDef[] = [{
-        field: 'Name', headerName: 'Name', width: 100, headerAlign: 'left',
+        field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left',
     }, {
         field: 'Status', headerName: 'Status', width: 100, headerAlign: 'left',
     }, {
@@ -183,11 +189,11 @@ storage:
         field: "action",
         headerName: "Action",
         width: 450,
-        renderCell: (vCluster) => (<Stack direction="row" spacing={1}>
-            {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
-            {getDeleteButton(vCluster.row.Name, vCluster.row.Namespace)}
+        renderCell: (vCluster) => (<Stack direction="row" spacing={1} style={{outline: "none"}}>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
             {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}
+            {getPauseResumeButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status)}
+            {getDeleteButton(vCluster.row.Name, vCluster.row.Namespace)}
         </Stack>)
     }];
 
@@ -215,7 +221,6 @@ storage:
 
     return (<div style={{display: 'flex', height: 400, width: '100%'}}>
         <Stack direction="row" spacing={2}>
-
             <Dialog
                 open={state.deleteOpen}
                 onClose={handleDeleteClose}
