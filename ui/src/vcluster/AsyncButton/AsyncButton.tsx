@@ -1,5 +1,5 @@
 import React from "react";
-import {ButtonBaseProps, Tooltip} from "@mui/material";
+import {Button, ButtonBaseProps, IconButton, Tooltip} from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
 
 const without = (props: any, keys: string[]) => {
@@ -17,7 +17,7 @@ export interface AsyncButtonProps extends ButtonBaseProps {
     onClickAsync?: (e: React.MouseEvent<HTMLElement>) => Promise<any>;
     tooltip?: string;
     variant?: string;
-    startIcon?: any;
+    buttonType?: string;
 }
 
 interface AsyncButtonState {
@@ -61,11 +61,27 @@ export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButt
             classNames.push("async-button-loading");
         }
 
-        const button = <LoadingButton {...without(this.props, ["onClickAsync"])}
-                                      loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
-                                      className={classNames.join(" ")}>
-            <span className={"async-button-content"}>{this.props.children}</span>
-        </LoadingButton>;
+        let button
+        if (this.state.loading) {
+            button = <LoadingButton {...without(this.props, ["onClickAsync", "buttonType"])}
+                                    loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
+                                    className={classNames.join(" ")}>{this.props.children}
+            </LoadingButton>;
+        } else {
+            if (this.props.buttonType === 'normal') {
+                button = <Button
+                    {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}
+                    className={classNames.join(" ")}>
+                    {this.props.children}
+                </Button>;
+            } else {
+                button = <IconButton
+                    {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}
+                    className={classNames.join(" ")}>
+                    {this.props.children}
+                </IconButton>;
+            }
+        }
         if (this.props.tooltip) {
             return <Tooltip title={this.props.tooltip}><span>{button}</span></Tooltip>
         }

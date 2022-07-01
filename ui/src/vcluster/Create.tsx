@@ -143,6 +143,7 @@ storage:
                         Cancel
                     </Button>
                     <AsyncButton
+                        buttonType="normal"
                         color="primary"
                         variant="contained"
                         onClickAsync={async (e) =>
