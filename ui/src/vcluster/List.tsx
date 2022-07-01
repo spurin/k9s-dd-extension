@@ -268,7 +268,7 @@ storage:
                         <Stack direction="column" spacing={2}>
                             <TextField
                                 value={state.name}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="name"
                                 label="Name"
@@ -278,7 +278,7 @@ storage:
                                 required/>
                             <TextField
                                 value={state.namespace}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="namespace"
                                 label="Namespace"
@@ -289,7 +289,7 @@ storage:
                             <TextField
                                 value={chartVersion}
                                 onChange={(event) => setChartVersion(event.target.value)}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="chartVersion"
                                 label="Chart Version"
@@ -340,6 +340,7 @@ storage:
             rows={props.vClusters || []}
             columns={columns}
             pageSize={5}
+            autoHeight={true}
             rowsPerPageOptions={[5]}
             checkboxSelection={false}
             disableSelectionOnClick={true}
