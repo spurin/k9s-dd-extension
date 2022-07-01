@@ -99,6 +99,8 @@ storage:
             name: "",
             namespace: ""
         });
+        setValues("")
+        setChartVersion("")
     };
 
     const getUpgradeButton = (name: string, namespace: string) => {
@@ -235,13 +237,14 @@ storage:
                     Delete vcluster
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure to delete <i>{state.name}</i> cluster
-                        from <i>{state.namespace}</i>?
+                    <DialogContentText
+                        color="#a39796" id="alert-dialog-description">
+                        Are you sure to delete <u><i>{state.name}</i></u> cluster
+                        from <u><i>{state.namespace}</i></u>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" color="error" onClick={handleDeleteClose}>Cancel</Button>
+                    <Button variant="outlined" color="warning" onClick={handleDeleteClose}>Cancel</Button>
                     <AsyncButton
                         buttonType="normal"
                         color="error"
@@ -307,7 +310,7 @@ storage:
                         </Stack>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleEditClose} color="error" variant="outlined">
+                        <Button onClick={handleEditClose} color="warning" variant="outlined">
                             Cancel
                         </Button>
                         <AsyncButton

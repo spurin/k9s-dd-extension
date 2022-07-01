@@ -63,9 +63,10 @@ export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButt
 
         let button
         if (this.state.loading) {
-            button = <LoadingButton {...without(this.props, ["onClickAsync", "buttonType"])}
-                                    loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
-                                    className={classNames.join(" ")}>{this.props.children}
+            button = <LoadingButton
+                {...without(this.props, ["onClickAsync", "buttonType"])}
+                loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
+                className={classNames.join(" ")}>{this.props.children}
             </LoadingButton>;
         } else {
             if (this.props.buttonType === 'normal') {

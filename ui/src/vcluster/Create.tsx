@@ -36,6 +36,11 @@ storage:
     };
 
     const handleClose = () => {
+        setName("");
+        setDistro("");
+        setValues("");
+        setNamespace("");
+        setChartVersion("");
         setOpen(false);
     };
 
@@ -50,11 +55,6 @@ storage:
     const createUIVC = async (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
         await props.createUIVC(name, namespace, distro, chartVersion, values);
-        setName("");
-        setDistro("");
-        setValues("");
-        setNamespace("");
-        setChartVersion("");
         handleClose();
     };
 
@@ -136,7 +136,7 @@ storage:
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="error" variant="outlined">
+                    <Button onClick={handleClose} color="warning" variant="outlined">
                         Cancel
                     </Button>
                     <AsyncButton

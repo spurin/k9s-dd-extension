@@ -35,10 +35,6 @@ code {
     padding: 5px 10px;
 }
 
-.async-button-loading > .async-button-loading > .MuiButton-startIcon {
-    visibility: hidden;
-}
-
 body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
