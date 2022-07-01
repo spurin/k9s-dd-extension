@@ -241,7 +241,7 @@ storage:
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDeleteClose}>Cancel</Button>
+                    <Button variant="outlined" color="error" onClick={handleDeleteClose}>Cancel</Button>
                     <AsyncButton
                         buttonType="normal"
                         color="error"
@@ -260,10 +260,8 @@ storage:
                 open={state.editOpen}
                 onClose={handleEditClose}
                 aria-labelledby="form-dialog-title">
-                <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
-                    <DialogContentText align={"center"}>
-                        Upgrade vcluster
-                    </DialogContentText>
+                <DialogTitle id="form-dialog-title" align={"left"}>
+                    Upgrade vcluster
                 </DialogTitle>
                 <form noValidate>
                     <DialogContent>
@@ -309,7 +307,7 @@ storage:
                         </Stack>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleEditClose} color="error" variant="contained">
+                        <Button onClick={handleEditClose} color="error" variant="outlined">
                             Cancel
                         </Button>
                         <AsyncButton

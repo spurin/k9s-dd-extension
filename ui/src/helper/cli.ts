@@ -90,10 +90,6 @@ export const pauseVCluster = async (ddClient: v1.DockerDesktopClient, name: stri
     return true;
 }
 
-// const getVClusterContextName = (vClusterName: string, vClusterNamespace: string, currentContext: string) => {
-//     return "vcluster_" + vClusterName + "_" + vClusterNamespace + "_" + currentContext
-// }
-
 // Deletes the vcluster
 export const deleteVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
     // vcluster delete name -n namespace
@@ -102,16 +98,6 @@ export const deleteVCluster = async (ddClient: v1.DockerDesktopClient, name: str
         console.log("[deleteVCluster] : ", output.stderr);
         return false;
     }
-    // const contextName = getVClusterContextName(name, namespace, DockerDesktop)
-    // try {
-    //     const result = await Promise.all([
-    //         hostCli(ddClient, "kubectl", ["config", "unset", "users." + contextName]),
-    //         hostCli(ddClient, "kubectl", ["config", "unset", "contexts." + contextName]),
-    //         hostCli(ddClient, "kubectl", ["config", "unset", "clusters." + contextName])]);
-    //     console.log(result)
-    // } catch (err) {
-    //     console.log(err);
-    // }
     return true;
 }
 
@@ -166,6 +152,7 @@ export const updateDockerDesktopK8sKubeConfig = async (ddClient: v1.DockerDeskto
     // kubectl config view --raw
     let kubeConfig = await hostCli(ddClient, "kubectl", ["config", "view", "--raw", "--minify", "--context", DockerDesktop]);
     if (kubeConfig?.stderr) {
+        console.log("error", kubeConfig?.stderr);
         return false;
     }
 

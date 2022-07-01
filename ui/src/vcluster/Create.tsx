@@ -5,7 +5,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     MenuItem,
     Stack,
@@ -64,10 +63,8 @@ storage:
             open={open}
             onClose={handleClose}
             aria-labelledby="form-dialog-title">
-            <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
-                <DialogContentText align={"center"}>
-                    Create new vcluster
-                </DialogContentText>
+            <DialogTitle id="form-dialog-title" align={"left"}>
+                Create new vcluster
             </DialogTitle>
             <form noValidate>
                 <DialogContent>
@@ -139,7 +136,7 @@ storage:
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="error" variant="contained">
+                    <Button onClick={handleClose} color="error" variant="outlined">
                         Cancel
                     </Button>
                     <AsyncButton
