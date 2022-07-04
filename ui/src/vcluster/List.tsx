@@ -194,7 +194,7 @@ storage:
         align: 'left',
         headerAlign: 'left',
         headerName: "Action",
-        width: 400,
+        width: 250,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1} style={{outline: "none"}}>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
             {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}
