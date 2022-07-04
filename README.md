@@ -48,18 +48,20 @@ In Docker Desktop,
 2. Go to Preferences -> Extensions -> Check
    "Enable Docker Extensions".
 
-### Running published extension
+### Three ways to run extension
+
+#### Running published extension
 The standard way to get the vcluster extension for Docker Desktop is by using the Docker Marketplace. This will install
 the officially released version of the extension.
 
 Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for vcluster -> Click on Install
 
-### Running unpublished extension
+#### Or Running unpublished extension
 This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
 
 `docker extension install loftsh/vcluster-dd-extension:v0.0.1`
 
-### Building and Installing extension
+#### Or Building and Installing extension
 If you are making local changes and would like to try them out, you will need
 to follow these steps:
 
