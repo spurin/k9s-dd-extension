@@ -50,7 +50,7 @@ export const createVCluster = async (ddClient: v1.DockerDesktopClient, name: str
             args.push("--extra-values");
             args.push(JSON.stringify(fileName));
         } catch (err) {
-            console.log("error", err);
+            console.log("error", JSON.stringify(err));
         }
     }
     args.push("--connect=false");
@@ -160,7 +160,16 @@ export const updateDockerDesktopK8sKubeConfig = async (ddClient: v1.DockerDeskto
     try {
         await ddClient.extension.vm?.service?.post("/store-kube-config", {data: kubeConfig?.stdout})
     } catch (err) {
-        console.log("error", err);
+        console.log("error", JSON.stringify(err));
+    }
+
+    let output = await checkK8sConnection(ddClient);
+    if (output?.stderr) {
+        console.log("[checkK8sConnection] : ", output.stderr);
+        return false;
+    }
+    if (output?.stdout) {
+        console.log("[checkK8sConnection] : ", output?.stdout)
     }
 
     return true;
@@ -186,4 +195,10 @@ export const getContainerK8sContext = async (ddClient: v1.DockerDesktopClient) =
         return {};
     }
     return JSON.parse(output?.stdout || "[]").length > 0 ? JSON.parse(output?.stdout || "[]")[0] : {};
+}
+
+// Retrieves kubectl cluster-info
+export const checkK8sConnection = async (ddClient: v1.DockerDesktopClient) => {
+    // kubectl cluster-info
+    return await cli(ddClient, "kubectl", ["cluster-info"]);
 }
