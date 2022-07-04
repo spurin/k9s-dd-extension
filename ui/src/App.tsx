@@ -20,7 +20,7 @@ export const App = () => {
                     maxHeight: {xs: 150, md: 350},
                     maxWidth: {xs: 150, md: 350},
                 }}
-                src={Logo} />
+                src={Logo}/>
         </Stack>
         <VCluster/>
     </DockerMuiThemeProvider>);

@@ -5,7 +5,6 @@ import {
     Dialog,
     DialogActions,
     DialogContent,
-    DialogContentText,
     DialogTitle,
     MenuItem,
     Stack,
@@ -37,6 +36,11 @@ storage:
     };
 
     const handleClose = () => {
+        setName("");
+        setDistro("");
+        setValues("");
+        setNamespace("");
+        setChartVersion("");
         setOpen(false);
     };
 
@@ -51,11 +55,6 @@ storage:
     const createUIVC = async (event: React.MouseEvent<HTMLElement>) => {
         event.preventDefault();
         await props.createUIVC(name, namespace, distro, chartVersion, values);
-        setName("");
-        setDistro("");
-        setValues("");
-        setNamespace("");
-        setChartVersion("");
         handleClose();
     };
 
@@ -64,10 +63,8 @@ storage:
             open={open}
             onClose={handleClose}
             aria-labelledby="form-dialog-title">
-            <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
-                <DialogContentText align={"center"}>
-                    Create new vcluster
-                </DialogContentText>
+            <DialogTitle id="form-dialog-title" align={"left"}>
+                Create new vcluster
             </DialogTitle>
             <form noValidate>
                 <DialogContent>
@@ -76,7 +73,7 @@ storage:
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                             autoFocus
-                            variant="filled"
+                            variant="standard"
                             margin="dense"
                             id="name"
                             label="Name"
@@ -91,7 +88,7 @@ storage:
                             size="medium"
                             value={namespace}
                             onChange={handleNamespaceChange}
-                            variant="filled">
+                            variant="standard">
                             <MenuItem value="">
                                 <em>Create new</em>
                             </MenuItem>
@@ -108,7 +105,7 @@ storage:
                             size="medium"
                             value={distro}
                             onChange={handleDistroChange}
-                            variant="filled">
+                            variant="standard">
                             <MenuItem value="">
                                 <em>None</em>
                             </MenuItem>
@@ -121,7 +118,7 @@ storage:
                         <TextField
                             value={chartVersion}
                             onChange={(event) => setChartVersion(event.target.value)}
-                            variant="filled"
+                            variant="standard"
                             margin="dense"
                             id="chartVersion"
                             label="(Optional) Chart Version"
@@ -139,10 +136,11 @@ storage:
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="error" variant="contained">
+                    <Button onClick={handleClose} color="warning" variant="outlined">
                         Cancel
                     </Button>
                     <AsyncButton
+                        buttonType="normal"
                         color="primary"
                         variant="contained"
                         onClickAsync={async (e) =>

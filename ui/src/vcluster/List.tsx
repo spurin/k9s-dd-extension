@@ -15,6 +15,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
+    IconButton,
     Stack,
     TextareaAutosize,
     TextField,
@@ -98,16 +99,18 @@ storage:
             name: "",
             namespace: ""
         });
+        setValues("")
+        setChartVersion("")
     };
 
     const getUpgradeButton = (name: string, namespace: string) => {
         return <Tooltip title={"Upgrade the virtual cluster"}>
             <span>
-                <Button variant="contained" onClick={() => {
+                <IconButton onClick={() => {
                     return handleEditOpen(name, namespace)
-                }} startIcon={<UpgradeIcon/>}>
-            Upgrade
-            </Button>
+                }}>
+                    <UpgradeIcon/>
+                </IconButton>
             </span>
         </Tooltip>
     }
@@ -115,11 +118,11 @@ storage:
     const getDeleteButton = (name: string, namespace: string) => {
         return <Tooltip title={"Delete the virtual cluster"}>
            <span>
-               <Button variant="contained" color="error" onClick={() => {
+               <IconButton onClick={() => {
                    return handleDeleteOpen(name, namespace)
-               }} startIcon={<DeleteIcon/>}>
-                Delete
-            </Button>
+               }}>
+                   <DeleteIcon/>
+               </IconButton>
            </span>
         </Tooltip>
     }
@@ -127,23 +130,17 @@ storage:
     const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
         if (status === "Paused") {
             return <AsyncButton
-                variant="contained"
-                style={{"width": "90px"}}
                 tooltip={"Start the virtual cluster"}
                 onClickAsync={async () => await handleResume(name, namespace, status)}
-                startIcon={<PlayArrowIcon/>}
-                color="success">
-                Resume
+            >
+                <PlayArrowIcon/>
             </AsyncButton>
         } else {
             return <AsyncButton
-                variant="contained"
-                style={{"width": "90px"}}
                 tooltip={"Stop the virtual cluster"}
                 onClickAsync={async () => await handlePause(name, namespace, status)}
-                startIcon={<PauseIcon/>}
-                color="warning">
-                Pause
+            >
+                <PauseIcon/>
             </AsyncButton>
         }
     }
@@ -151,15 +148,11 @@ storage:
     const getConnectDisconnectButtons = (name: string, namespace: string, status: string, context: string) => {
         if (isConnected(name, namespace, context)) {
             return <AsyncButton
-                variant="contained"
-                style={{"width": "110px"}}
                 tooltip={"Return to docker-desktop kube context"}
                 onClickAsync={async () =>
                     await handleDisconnect(name, namespace, context)
-                }
-                startIcon={<CloudOffIcon/>}
-                color="warning">
-                Disconnect
+                }>
+                <CloudOffIcon/>
             </AsyncButton>
         } else {
             return <AsyncButton
@@ -167,12 +160,8 @@ storage:
                     await handleConnect(name, namespace, status)
                 }}
                 tooltip={"Switch current kube-context to virtual cluster"}
-                variant="contained"
-                style={{"width": "110px"}}
-                startIcon={<CloudIcon/>}
-                color="success"
                 disabled={status !== 'Running'}>
-                Connect
+                <CloudIcon/>
             </AsyncButton>
         }
     }
@@ -182,24 +171,30 @@ storage:
     }
 
     const columns: GridColDef[] = [{
-        field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left',
+        field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left', align: 'left',
+
     }, {
-        field: 'Status', headerName: 'Status', width: 100, headerAlign: 'left',
+        field: 'Status', headerName: 'Status', width: 100, headerAlign: 'left', align: 'left',
+
     }, {
-        field: 'Namespace', headerName: 'Namespace', width: 100, headerAlign: 'left',
+        field: 'Namespace', headerName: 'Namespace', width: 100, headerAlign: 'left', align: 'left',
+
     }, {
         field: 'Age',
         headerName: 'Age',
         type: 'number',
         width: 100,
+        align: 'left',
         headerAlign: 'left',
         renderCell: (vCluster) => (<>
             {convertSeconds(vCluster.row.Created)}
         </>)
     }, {
         field: "action",
+        align: 'left',
+        headerAlign: 'left',
         headerName: "Action",
-        width: 420,
+        width: 400,
         renderCell: (vCluster) => (<Stack direction="row" spacing={1} style={{outline: "none"}}>
             {getConnectDisconnectButtons(vCluster.row.Name, vCluster.row.Namespace, vCluster.row.Status, vCluster.row.Context)}
             {getUpgradeButton(vCluster.row.Name, vCluster.row.Namespace)}
@@ -242,14 +237,16 @@ storage:
                     Delete vcluster
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
-                        Are you sure to delete <i>{state.name}</i> cluster
-                        from <i>{state.namespace}</i>?
+                    <DialogContentText
+                        color="#a39796" id="alert-dialog-description">
+                        Are you sure to delete <u><i>{state.name}</i></u> cluster
+                        from <u><i>{state.namespace}</i></u>?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleDeleteClose}>Cancel</Button>
+                    <Button variant="outlined" color="warning" onClick={handleDeleteClose}>Cancel</Button>
                     <AsyncButton
+                        buttonType="normal"
                         color="error"
                         variant="contained"
                         onClickAsync={async (e) =>
@@ -266,17 +263,15 @@ storage:
                 open={state.editOpen}
                 onClose={handleEditClose}
                 aria-labelledby="form-dialog-title">
-                <DialogTitle sx={{m: 0, p: 2}} id="form-dialog-title">
-                    <DialogContentText align={"center"}>
-                        Upgrade vcluster
-                    </DialogContentText>
+                <DialogTitle id="form-dialog-title" align={"left"}>
+                    Upgrade vcluster
                 </DialogTitle>
                 <form noValidate>
                     <DialogContent>
                         <Stack direction="column" spacing={2}>
                             <TextField
                                 value={state.name}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="name"
                                 label="Name"
@@ -286,7 +281,7 @@ storage:
                                 required/>
                             <TextField
                                 value={state.namespace}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="namespace"
                                 label="Namespace"
@@ -297,7 +292,7 @@ storage:
                             <TextField
                                 value={chartVersion}
                                 onChange={(event) => setChartVersion(event.target.value)}
-                                variant="filled"
+                                variant="standard"
                                 margin="dense"
                                 id="chartVersion"
                                 label="Chart Version"
@@ -315,10 +310,11 @@ storage:
                         </Stack>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleEditClose} color="error" variant="contained">
+                        <Button onClick={handleEditClose} color="warning" variant="outlined">
                             Cancel
                         </Button>
                         <AsyncButton
+                            buttonType="normal"
                             color="primary"
                             variant="contained"
                             onClickAsync={async (e) =>
@@ -335,9 +331,6 @@ storage:
         <DataGrid
             sx={{
                 padding: "10px",
-                boxShadow: 4,
-                border: 4,
-                borderColor: 'primary.light',
                 '.MuiDataGrid-columnSeparator': {
                     display: 'none',
                 },
@@ -350,6 +343,7 @@ storage:
             rows={props.vClusters || []}
             columns={columns}
             pageSize={5}
+            autoHeight={true}
             rowsPerPageOptions={[5]}
             checkboxSelection={false}
             disableSelectionOnClick={true}

@@ -28,26 +28,40 @@ const refreshData = async (setCurrentK8sContext: any, setVClusters: any, setName
         setVClusters(result[1]);
         setNamespaces(result[2]);
     } catch (err) {
-        console.log(err);
+        console.log("error", JSON.stringify(err));
         setCurrentK8sContext("");
     }
+}
+
+const checkIfDDK8sEnabled = async (setIsLoading: any) => {
+    try {
+        setIsLoading(true);
+        let isDDK8sEnabled = await updateDockerDesktopK8sKubeConfig(ddClient);
+        setIsLoading(false);
+        return isDDK8sEnabled
+    } catch (err) {
+        console.log("error", JSON.stringify(err));
+        setIsLoading(false);
+    }
+    return false;
 }
 
 export const VCluster = () => {
     const [vClusters, setVClusters] = React.useState(undefined);
     const [namespaces, setNamespaces] = React.useState([]);
     const [currentK8sContext, setCurrentK8sContext] = React.useState("");
+    const [isDDK8sEnabled, setIsDDK8sEnabled] = React.useState(false);
+    const [isLoading, setIsLoading] = React.useState(false);
 
     useEffect(() => {
         (async () => {
-            try {
-                await updateDockerDesktopK8sKubeConfig(ddClient);
-            } catch (err) {
-                console.log("error", err);
+            let isDDK8sEnabled = await checkIfDDK8sEnabled(setIsLoading);
+            console.log("isDDK8sEnabled : ", isDDK8sEnabled)
+            await setIsDDK8sEnabled(isDDK8sEnabled)
+            if (isDDK8sEnabled) {
+                await refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
             }
-            await refreshData(setCurrentK8sContext, setVClusters, setNamespaces);
         })();
-
         const interval = setInterval(() => refreshData(setCurrentK8sContext, setVClusters, setNamespaces), 5000);
         return () => clearInterval(interval);
     }, []);
@@ -161,6 +175,46 @@ export const VCluster = () => {
         }
     };
 
+    let component
+    if (isLoading) {
+        component = <Box sx={{
+            marginBottom: "15px",
+            textAlign: "center"
+        }}>
+            <Typography variant="h1">
+                Loading...
+            </Typography>
+        </Box>
+    } else {
+        if (isDDK8sEnabled) {
+            component = <React.Fragment>
+                <VClusterCreate
+                    createUIVC={createUIVC}
+                    namespaces={namespaces}/>
+                <VClusterList
+                    upgradeUIVC={upgradeUIVC}
+                    deleteUIVC={deleteUIVC}
+                    pauseUIVC={pauseUIVC}
+                    resumeUIVC={resumeUIVC}
+                    disconnectUIVC={disconnectUIVC}
+                    connectUIVC={connectUIVC}
+                    vClusters={vClusters}
+                    currentK8sContext={currentK8sContext}
+                />
+            </React.Fragment>
+        } else {
+            component = <Box sx={{
+                marginBottom: "15px",
+                textAlign: "center"
+            }}>
+                <Typography variant="h2" color="error">
+                    Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the [<a
+                    href="https://docs.docker.com/desktop/kubernetes/">docker
+                    documentation</a>] on how to enable the Kubernetes server.
+                </Typography>
+            </Box>
+        }
+    }
     return <Stack direction="column" spacing={2}>
         <Box sx={{
             marginBottom: "15px",
@@ -172,18 +226,6 @@ export const VCluster = () => {
                 multi-tenancy and isolation than regular namespaces.
             </Typography>
         </Box>
-        <VClusterCreate
-            createUIVC={createUIVC}
-            namespaces={namespaces}/>
-        <VClusterList
-            upgradeUIVC={upgradeUIVC}
-            deleteUIVC={deleteUIVC}
-            pauseUIVC={pauseUIVC}
-            resumeUIVC={resumeUIVC}
-            disconnectUIVC={disconnectUIVC}
-            connectUIVC={connectUIVC}
-            vClusters={vClusters}
-            currentK8sContext={currentK8sContext}
-        />
+        {component}
     </Stack>;
 }

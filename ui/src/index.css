@@ -1,40 +1,50 @@
 body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
     "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
     sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
 }
 
 *:focus {
-  outline: none !important;
+    outline: none !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
     monospace;
 }
 
 .MuiDataGrid-cell {
-  outline: none !important;
+    outline: none !important;
 }
 
 .MuiDataGrid-cell .MuiButton-root > span {
-  margin-right: 5px;
-  margin-left: 0;
+    margin-right: 5px;
+    margin-left: 0;
 }
 
 .MuiDataGrid-cell:focus {
-  outline: none !important;
+    outline: none !important;
 }
 
 /* Button size */
 .MuiDataGrid-cell .MuiButton-root {
-  color: white;
-  padding: 5px 10px;
+    color: white;
+    padding: 5px 10px;
 }
 
-.async-button-loading > .async-button-content, .async-button-loading > .MuiButton-startIcon {
-  visibility: hidden;
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
 }

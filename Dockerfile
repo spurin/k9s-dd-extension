@@ -41,7 +41,8 @@ LABEL org.opencontainers.image.title="vcluster" \
     com.docker.extension.screenshots="[{\"alt\": \"vcluster \", \"url\": \"https://www.vcluster.com/docs/media/diagrams/vcluster-architecture.svg\"}]" \
     com.docker.extension.detailed-description="Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better multi-tenancy and isolation than regular namespaces." \
     com.docker.extension.publisher-url="https://www.vcluster.com" \
-    com.docker.extension.additional-urls="[{\"title\":\"Loft Inc.\",\"url\":\"https:\/\/loft.sh\"}]"
+    com.docker.extension.additional-urls="[{\"title\":\"Loft Inc.\",\"url\":\"https:\/\/loft.sh\"}]" \
+    com.docker.extension.changelog="<li>Create/Delete/Upgrade vcluster</li><li>Pause/Resume vcluster</li><li>Connect/Disconnect vcluster</li>"
 
 RUN apk add curl
 RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl \
