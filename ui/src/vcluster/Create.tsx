@@ -73,7 +73,7 @@ storage:
                             value={name}
                             onChange={(event) => setName(event.target.value)}
                             autoFocus
-                            variant="standard"
+                            variant="outlined"
                             margin="dense"
                             id="name"
                             label="Name"
@@ -88,7 +88,7 @@ storage:
                             size="medium"
                             value={namespace}
                             onChange={handleNamespaceChange}
-                            variant="standard">
+                            variant="outlined">
                             <MenuItem value="">
                                 <em>Create new</em>
                             </MenuItem>
@@ -105,7 +105,7 @@ storage:
                             size="medium"
                             value={distro}
                             onChange={handleDistroChange}
-                            variant="standard">
+                            variant="outlined">
                             <MenuItem value="">
                                 <em>None</em>
                             </MenuItem>
@@ -118,7 +118,7 @@ storage:
                         <TextField
                             value={chartVersion}
                             onChange={(event) => setChartVersion(event.target.value)}
-                            variant="standard"
+                            variant="outlined"
                             margin="dense"
                             id="chartVersion"
                             label="(Optional) Chart Version"

@@ -15,7 +15,7 @@ import {
     DialogContent,
     DialogContentText,
     DialogTitle,
-    IconButton,
+    Fab,
     Stack,
     TextareaAutosize,
     TextField,
@@ -106,25 +106,29 @@ storage:
     const getUpgradeButton = (name: string, namespace: string) => {
         return <Tooltip title={"Upgrade the virtual cluster"}>
             <span>
-                <IconButton onClick={() => {
+                <Fab sx={{
+                    boxShadow: 0
+                }} size="small" onClick={() => {
                     return handleEditOpen(name, namespace)
                 }}>
                     <UpgradeIcon/>
-                </IconButton>
+                </Fab>
             </span>
-        </Tooltip>
+        </Tooltip>;
     }
 
     const getDeleteButton = (name: string, namespace: string) => {
         return <Tooltip title={"Delete the virtual cluster"}>
            <span>
-               <IconButton onClick={() => {
+               <Fab sx={{
+                   boxShadow: 0
+               }} size="small" onClick={() => {
                    return handleDeleteOpen(name, namespace)
                }}>
                    <DeleteIcon/>
-               </IconButton>
+               </Fab>
            </span>
-        </Tooltip>
+        </Tooltip>;
     }
 
     const getPauseResumeButtons = (name: string, namespace: string, status: string) => {
@@ -134,14 +138,14 @@ storage:
                 onClickAsync={async () => await handleResume(name, namespace, status)}
             >
                 <PlayArrowIcon/>
-            </AsyncButton>
+            </AsyncButton>;
         } else {
             return <AsyncButton
                 tooltip={"Stop the virtual cluster"}
                 onClickAsync={async () => await handlePause(name, namespace, status)}
             >
                 <PauseIcon/>
-            </AsyncButton>
+            </AsyncButton>;
         }
     }
 
@@ -153,7 +157,7 @@ storage:
                     await handleDisconnect(name, namespace, context)
                 }>
                 <CloudOffIcon/>
-            </AsyncButton>
+            </AsyncButton>;
         } else {
             return <AsyncButton
                 onClickAsync={async () => {
@@ -162,7 +166,7 @@ storage:
                 tooltip={"Switch current kube-context to virtual cluster"}
                 disabled={status !== 'Running'}>
                 <CloudIcon/>
-            </AsyncButton>
+            </AsyncButton>;
         }
     }
 
@@ -271,7 +275,7 @@ storage:
                         <Stack direction="column" spacing={2}>
                             <TextField
                                 value={state.name}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="name"
                                 label="Name"
@@ -281,7 +285,7 @@ storage:
                                 required/>
                             <TextField
                                 value={state.namespace}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="namespace"
                                 label="Namespace"
@@ -292,7 +296,7 @@ storage:
                             <TextField
                                 value={chartVersion}
                                 onChange={(event) => setChartVersion(event.target.value)}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="chartVersion"
                                 label="Chart Version"
