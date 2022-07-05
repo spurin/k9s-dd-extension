@@ -275,7 +275,7 @@ storage:
                         <Stack direction="column" spacing={2}>
                             <TextField
                                 value={state.name}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="name"
                                 label="Name"
@@ -285,7 +285,7 @@ storage:
                                 required/>
                             <TextField
                                 value={state.namespace}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="namespace"
                                 label="Namespace"
@@ -296,7 +296,7 @@ storage:
                             <TextField
                                 value={chartVersion}
                                 onChange={(event) => setChartVersion(event.target.value)}
-                                variant="standard"
+                                variant="outlined"
                                 margin="dense"
                                 id="chartVersion"
                                 label="Chart Version"
