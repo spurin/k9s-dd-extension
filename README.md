@@ -59,7 +59,7 @@ Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for vclu
 #### Or Running unpublished extension
 This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
 
-`docker extension install loftsh/vcluster-dd-extension:v0.0.1`
+`docker extension install loftsh/vcluster-dd-extension:v0.0.2`
 
 #### Or Building and Installing extension
 If you are making local changes and would like to try them out, you will need
