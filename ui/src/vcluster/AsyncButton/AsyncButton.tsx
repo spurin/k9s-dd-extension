@@ -1,6 +1,7 @@
 import React from "react";
-import {Button, ButtonBaseProps, IconButton, Tooltip} from "@mui/material";
+import {Box, Button, ButtonBaseProps, CircularProgress, Fab, Tooltip} from "@mui/material";
 import LoadingButton from '@mui/lab/LoadingButton';
+import {blueGrey} from "@mui/material/colors";
 
 const without = (props: any, keys: string[]) => {
     if (!props) {
@@ -53,34 +54,45 @@ export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButt
             }, 400);
         };
 
-        const classNames = ["async-button"];
-        if (this.props.className) {
-            classNames.push(this.props.className);
-        }
-        if (this.state.loading) {
-            classNames.push("async-button-loading");
-        }
-
         let button
         if (this.state.loading) {
-            button = <LoadingButton
-                {...without(this.props, ["onClickAsync", "buttonType"])}
-                loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}
-                className={classNames.join(" ")}>{this.props.children}
-            </LoadingButton>;
+            if (this.props.buttonType === 'normal') {
+                button = <LoadingButton
+                    {...without(this.props, ["onClickAsync", "buttonType"])}
+                    loading={this.state.loading} {...(this.props.onClickAsync ? {onClick} : {})}>{this.props.children}
+                </LoadingButton>;
+            } else {
+                button = <Box sx={{position: 'relative'}}>
+                    <Fab size="small" disabled={true}>
+                        {this.props.children}
+                    </Fab>
+                    {this.state.loading && (
+                        <CircularProgress
+                            size={45}
+                            sx={{
+                                color: blueGrey[500],
+                                position: 'absolute',
+                                top: -2,
+                                left: -2,
+                                zIndex: 1,
+                            }}
+                        />
+                    )}
+                </Box>;
+            }
         } else {
             if (this.props.buttonType === 'normal') {
                 button = <Button
-                    {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}
-                    className={classNames.join(" ")}>
+                    {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}>
                     {this.props.children}
                 </Button>;
             } else {
-                button = <IconButton
-                    {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}
-                    className={classNames.join(" ")}>
+                button = <Fab sx={{
+                    boxShadow: 0
+                }}
+                              size="small"  {...without(this.props, ["onClickAsync", "buttonType"])} {...(this.props.onClickAsync ? {onClick} : {})}>
                     {this.props.children}
-                </IconButton>;
+                </Fab>;
             }
         }
         if (this.props.tooltip) {
