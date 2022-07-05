@@ -7,6 +7,10 @@ body {
     -moz-osx-font-smoothing: grayscale;
 }
 
+.MuiDataGrid-columnHeaders {
+    border-color: rgba(224, 224, 224, 1) !important;
+}
+
 *:focus {
     outline: none !important;
 }
@@ -31,7 +35,6 @@ code {
 
 /* Button size */
 .MuiDataGrid-cell .MuiButton-root {
-    color: white;
     padding: 5px 10px;
 }
 

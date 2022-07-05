@@ -178,10 +178,10 @@ storage:
         field: 'Name', headerName: 'Name', flex: 1, headerAlign: 'left', align: 'left',
 
     }, {
-        field: 'Status', headerName: 'Status', width: 100, headerAlign: 'left', align: 'left',
+        field: 'Status', headerName: 'Status', width: 150, headerAlign: 'left', align: 'left',
 
     }, {
-        field: 'Namespace', headerName: 'Namespace', width: 100, headerAlign: 'left', align: 'left',
+        field: 'Namespace', headerName: 'Namespace', width: 150, headerAlign: 'left', align: 'left',
 
     }, {
         field: 'Age',

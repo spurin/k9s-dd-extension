@@ -1,5 +1,5 @@
 .App {
-    text-align: justify;
+    text-align: left;
 }
 
 .App-logo {
@@ -13,13 +13,23 @@
     }
 }
 
+.MuiFab-sizeSmall {
+    width: 35px;
+    height: 30px;
+}
+
+.MuiFab-sizeSmall > svg {
+    width: 0.85em;
+    height: 0.85em;
+}
+
 .App-header {
     background-color: #282c34;
     min-height: 100vh;
     display: flex;
     flex-direction: column;
-    align-items: center;
-    justify-content: center;
+    justify-content: left;
+    text-align: left;
     font-size: calc(10px + 2vmin);
     color: white;
 }

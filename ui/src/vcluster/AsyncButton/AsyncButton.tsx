@@ -68,7 +68,7 @@ export class AsyncButton extends React.PureComponent<AsyncButtonProps, AsyncButt
                     </Fab>
                     {this.state.loading && (
                         <CircularProgress
-                            size={45}
+                            size={40}
                             sx={{
                                 color: blueGrey[500],
                                 position: 'absolute',

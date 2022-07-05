@@ -12,11 +12,11 @@ export const App = () => {
             <Box
                 component="img"
                 sx={{
-                    alignSelf: "center",
+                    alignSelf: "left",
                     height: 100,
                     width: 300,
-                    marginTop: "20px",
-                    marginBottom: "20px",
+                    marginTop: "30px",
+                    marginBottom: "10px",
                     maxHeight: {xs: 150, md: 350},
                     maxWidth: {xs: 150, md: 350},
                 }}

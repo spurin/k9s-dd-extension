@@ -16,8 +16,9 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Box, Stack} from "@mui/material";
+import {Box, CircularProgress, Stack} from "@mui/material";
 import Typography from '@mui/material/Typography';
+import {blueGrey} from "@mui/material/colors";
 
 const ddClient = createDockerDesktopClient();
 
@@ -181,9 +182,12 @@ export const VCluster = () => {
             marginBottom: "15px",
             textAlign: "center"
         }}>
-            <Typography variant="h1">
-                Loading...
-            </Typography>
+            <CircularProgress
+                size={50}
+                sx={{
+                    color: blueGrey[500],
+                }}
+            />
         </Box>
     } else {
         if (isDDK8sEnabled) {
@@ -218,7 +222,7 @@ export const VCluster = () => {
     return <Stack direction="column" spacing={2}>
         <Box sx={{
             marginBottom: "15px",
-            textAlign: "center"
+            textAlign: "left"
         }}>
             <Typography style={{"fontWeight": "500", "fontSize": "15px"}}>
                 Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
