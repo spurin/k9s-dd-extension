@@ -38,10 +38,10 @@ LABEL org.opencontainers.image.title="vcluster" \
     org.opencontainers.image.licenses="Apache-2.0" \
     com.docker.desktop.extension.icon="https://i.ibb.co/mXhVjv8/vcluster.png" \
     com.docker.desktop.extension.api.version=">= 0.2.3" \
-    com.docker.extension.screenshots="[{\"alt\": \"vcluster \", \"url\": \"https://www.vcluster.com/docs/media/diagrams/vcluster-architecture.svg\"}]" \
+    com.docker.extension.screenshots="[{\"alt\": \"vcluster\", \"url\": \"https://raw.githubusercontent.com/loft-sh/vcluster-dd-extension/master/media/vcluster-screenshot.png?token=GHSAT0AAAAAABQI4KZDD64Z22DEU2L76KQQYWETAXA\"},{\"alt\": \"vcluster\", \"url\": \"https://www.vcluster.com/docs/media/diagrams/vcluster-architecture.svg\"}]" \
     com.docker.extension.detailed-description="Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better multi-tenancy and isolation than regular namespaces." \
     com.docker.extension.publisher-url="https://www.vcluster.com" \
-    com.docker.extension.additional-urls="[{\"title\":\"Loft Inc.\",\"url\":\"https:\/\/loft.sh\"}]" \
+    com.docker.extension.additional-urls="[{\"title\":\"vcluster\",\"url\":\"https:\/\/vcluster.com\"},{\"title\":\"vcluster Documentation\",\"url\":\"https:\/\/vcluster.com/docs\"},{\"title\":\"Loft Inc.\",\"url\":\"https:\/\/loft.sh\"}]" \
     com.docker.extension.changelog="<li>Create/Delete/Upgrade vcluster</li><li>Pause/Resume vcluster</li><li>Connect/Disconnect vcluster</li>"
 
 RUN apk add curl
