@@ -1,5 +1,5 @@
 IMAGE?=loftsh/vcluster-dd-extension
-TAG?=v0.0.1
+TAG?=0.0.1
 
 BUILDER=buildx-multi-arch
 

@@ -16,10 +16,9 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Box, CircularProgress, Stack} from "@mui/material";
+import {Alert, AlertTitle, Box, CircularProgress, Stack} from "@mui/material";
 import Typography from '@mui/material/Typography';
 import {blueGrey} from "@mui/material/colors";
-import {Alert, AlertTitle} from "@mui/lab";
 
 const ddClient = createDockerDesktopClient();
 
@@ -35,14 +34,18 @@ const refreshData = async (setCurrentK8sContext: React.Dispatch<React.SetStateAc
     }
 }
 
-const refreshContext = async (setIsDDK8sEnabled: React.Dispatch<React.SetStateAction<any>>) => {
-    try {
-        let isDDK8sEnabled = await updateDockerDesktopK8sKubeConfig(ddClient);
+const refreshContext = async (isDDK8sEnabled: boolean, setIsDDK8sEnabled: React.Dispatch<React.SetStateAction<any>>) => {
+    if (!isDDK8sEnabled) {
+        try {
+            let isDDK8sEnabled = await updateDockerDesktopK8sKubeConfig(ddClient);
+            console.log("isDDK8sEnabled[interval] : ", isDDK8sEnabled)
+            setIsDDK8sEnabled(isDDK8sEnabled)
+        } catch (err) {
+            console.log("isDDK8sEnabled[interval] error : ", JSON.stringify(err));
+            setIsDDK8sEnabled(false);
+        }
+    } else {
         console.log("isDDK8sEnabled[interval] : ", isDDK8sEnabled)
-        setIsDDK8sEnabled(isDDK8sEnabled)
-    } catch (err) {
-        console.log("error", JSON.stringify(err));
-        setIsDDK8sEnabled(false);
     }
 }
 
@@ -53,7 +56,7 @@ const checkIfDDK8sEnabled = async (setIsLoading: React.Dispatch<React.SetStateAc
         setIsLoading(false);
         return isDDK8sEnabled
     } catch (err) {
-        console.log("error", JSON.stringify(err));
+        console.log("checkIfDDK8sEnabled error : ", JSON.stringify(err));
         setIsLoading(false);
     }
     return false;
@@ -75,13 +78,17 @@ export const VCluster = () => {
                 await refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
             }
         })();
-        const contextInterval = setInterval(() => refreshContext(setIsDDK8sEnabled), 5000);
-        const dataInterval = setInterval(() => refreshData(setCurrentK8sContext, setVClusters, setNamespaces), 5000);
+        const contextInterval = setInterval(() => refreshContext(isDDK8sEnabled, setIsDDK8sEnabled), 5000);
+        const dataInterval = setInterval(() => {
+            if (isDDK8sEnabled) {
+                return refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
+            }
+        }, 5000);
         return () => {
             clearInterval(dataInterval);
             clearInterval(contextInterval);
         }
-    }, []);
+    }, [isDDK8sEnabled]);
 
     const createUIVC = async (name: string, namespace: string, distro: string, chartVersion: string, values: string) => {
         try {
