@@ -136,7 +136,7 @@ storage:
                     </Stack>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleClose} color="warning" variant="outlined">
+                    <Button onClick={handleClose} color="secondary" variant="outlined">
                         Cancel
                     </Button>
                     <AsyncButton

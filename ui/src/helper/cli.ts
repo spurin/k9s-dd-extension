@@ -93,12 +93,26 @@ export const pauseVCluster = async (ddClient: v1.DockerDesktopClient, name: stri
 // Deletes the vcluster
 export const deleteVCluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
     // vcluster delete name -n namespace
-    let output = await hostCli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
+    let output = await cli(ddClient, "vcluster", ["delete", name, "-n", namespace]);
     if (output?.stderr) {
         console.log("[deleteVCluster] : ", output.stderr);
         return false;
     }
+    const contextName = getVClusterContextName(name, namespace, DockerDesktop)
+    try {
+        const result = await Promise.all([
+            hostCli(ddClient, "kubectl", ["config", "unset", "users." + contextName]),
+            hostCli(ddClient, "kubectl", ["config", "unset", "contexts." + contextName]),
+            hostCli(ddClient, "kubectl", ["config", "unset", "clusters." + contextName])]);
+        console.log(result)
+    } catch (err) {
+        console.log(err);
+    }
     return true;
+}
+
+const getVClusterContextName = (vClusterName: string, vClusterNamespace: string, currentContext: string) => {
+    return "vcluster_" + vClusterName + "_" + vClusterNamespace + "_" + currentContext
 }
 
 // Lists all namespaces from docker-desktop kubernetes
