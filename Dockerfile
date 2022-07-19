@@ -53,26 +53,19 @@ RUN curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s
     && tar -xzf helm-v3.9.0-linux-amd64.tar.gz && mv linux-amd64/helm /usr/local/bin/helm && chmod +x /usr/local/bin/helm && rm helm-v3.9.0-linux-amd64.tar.gz \
     && mkdir /linux \
     && cp /usr/local/bin/kubectl /linux/ \
-    && cp /usr/local/bin/vcluster /linux/ \
-    && cp /usr/local/bin/helm /linux/
+    && cp /usr/local/bin/vcluster /linux/
 
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/darwin/amd64/kubectl" \
     && curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-darwin-amd64)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster \
-    && curl -LO https://get.helm.sh/helm-v3.9.0-darwin-amd64.tar.gz \
-    && tar -xzf helm-v3.9.0-darwin-amd64.tar.gz && rm helm-v3.9.0-darwin-amd64.tar.gz \
     && mkdir /darwin \
     && chmod +x ./kubectl && mv ./kubectl /darwin/ \
-    && chmod +x ./vcluster && mv ./vcluster /darwin/ \
-    && chmod +x darwin-amd64/helm && mv darwin-amd64/helm /darwin/
+    && chmod +x ./vcluster && mv ./vcluster /darwin/
 
 RUN curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/windows/amd64/kubectl.exe" \
     && curl -s -L "https://github.com/loft-sh/vcluster/releases/latest" | sed -nE 's!.*"([^"]*vcluster-windows-amd64.exe)".*!https://github.com\1!p' | xargs -n 1 curl -L -o vcluster.exe \
-    && curl -LO https://get.helm.sh/helm-v3.9.0-windows-amd64.zip \
-    && unzip helm-v3.9.0-windows-amd64.zip \
     && mkdir /windows \
     && chmod +x ./kubectl.exe && mv ./kubectl.exe /windows/ \
-    && chmod +x ./vcluster.exe && mv ./vcluster.exe /windows/ \
-    && chmod +x windows-amd64/helm.exe && mv windows-amd64/helm.exe /windows/
+    && chmod +x ./vcluster.exe && mv ./vcluster.exe /windows/
 
 RUN mkdir -p /root/.kube
 RUN touch /root/.kube/config
