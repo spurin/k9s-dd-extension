@@ -16,13 +16,13 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Box, CircularProgress, Stack} from "@mui/material";
+import {Alert, AlertTitle, Box, CircularProgress, Stack} from "@mui/material";
 import Typography from '@mui/material/Typography';
 import {blueGrey} from "@mui/material/colors";
 
 const ddClient = createDockerDesktopClient();
 
-const refreshData = async (setCurrentK8sContext: any, setVClusters: any, setNamespaces: any) => {
+const refreshData = async (setCurrentK8sContext: React.Dispatch<React.SetStateAction<any>>, setVClusters: React.Dispatch<React.SetStateAction<any>>, setNamespaces: React.Dispatch<React.SetStateAction<any>>) => {
     try {
         const result = await Promise.all([getCurrentK8sContext(ddClient), listVClusters(ddClient), listNamespaces(ddClient)]);
         setCurrentK8sContext(result[0]);
@@ -34,14 +34,29 @@ const refreshData = async (setCurrentK8sContext: any, setVClusters: any, setName
     }
 }
 
-const checkIfDDK8sEnabled = async (setIsLoading: any) => {
+const refreshContext = async (isDDK8sEnabled: boolean, setIsDDK8sEnabled: React.Dispatch<React.SetStateAction<any>>) => {
+    if (!isDDK8sEnabled) {
+        try {
+            let isDDK8sEnabled = await updateDockerDesktopK8sKubeConfig(ddClient);
+            console.log("isDDK8sEnabled[interval] : ", isDDK8sEnabled)
+            setIsDDK8sEnabled(isDDK8sEnabled)
+        } catch (err) {
+            console.log("isDDK8sEnabled[interval] error : ", JSON.stringify(err));
+            setIsDDK8sEnabled(false);
+        }
+    } else {
+        console.log("isDDK8sEnabled[interval] : ", isDDK8sEnabled)
+    }
+}
+
+const checkIfDDK8sEnabled = async (setIsLoading: React.Dispatch<React.SetStateAction<any>>) => {
     try {
         setIsLoading(true);
         let isDDK8sEnabled = await updateDockerDesktopK8sKubeConfig(ddClient);
         setIsLoading(false);
         return isDDK8sEnabled
     } catch (err) {
-        console.log("error", JSON.stringify(err));
+        console.log("checkIfDDK8sEnabled error : ", JSON.stringify(err));
         setIsLoading(false);
     }
     return false;
@@ -63,9 +78,17 @@ export const VCluster = () => {
                 await refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
             }
         })();
-        const interval = setInterval(() => refreshData(setCurrentK8sContext, setVClusters, setNamespaces), 5000);
-        return () => clearInterval(interval);
-    }, []);
+        const contextInterval = setInterval(() => refreshContext(isDDK8sEnabled, setIsDDK8sEnabled), 5000);
+        const dataInterval = setInterval(() => {
+            if (isDDK8sEnabled) {
+                return refreshData(setCurrentK8sContext, setVClusters, setNamespaces)
+            }
+        }, 5000);
+        return () => {
+            clearInterval(dataInterval);
+            clearInterval(contextInterval);
+        }
+    }, [isDDK8sEnabled]);
 
     const createUIVC = async (name: string, namespace: string, distro: string, chartVersion: string, values: string) => {
         try {
@@ -207,15 +230,15 @@ export const VCluster = () => {
                 />
             </React.Fragment>
         } else {
-            component = <Box sx={{
-                marginBottom: "15px",
-                textAlign: "center"
-            }}>
-                <Typography variant="h2" color="error">
-                    Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the [<a
-                    href="https://docs.docker.com/desktop/kubernetes/">docker
-                    documentation</a>] on how to enable the Kubernetes server.
-                </Typography>
+            component = <Box>
+                <Alert severity="error">
+                    <AlertTitle>Kubernetes failure</AlertTitle>
+                    <Typography variant="h2">
+                        Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the [<a
+                        href="https://docs.docker.com/desktop/kubernetes/">docker
+                        documentation</a>] on how to enable the Kubernetes server.
+                    </Typography>
+                </Alert>
             </Box>
         }
     }
@@ -224,7 +247,7 @@ export const VCluster = () => {
             marginBottom: "15px",
             textAlign: "left"
         }}>
-            <Typography style={{"fontWeight": "500", "fontSize": "15px"}}>
+            <Typography variant="h3">
                 Create fully functional virtual Kubernetes clusters - Each vcluster runs inside a namespace of the
                 underlying k8s cluster. It's cheaper than creating separate full-blown clusters and it offers better
                 multi-tenancy and isolation than regular namespaces.

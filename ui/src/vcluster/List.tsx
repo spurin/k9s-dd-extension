@@ -248,7 +248,7 @@ storage:
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button variant="outlined" color="warning" onClick={handleDeleteClose}>Cancel</Button>
+                    <Button variant="outlined" color="secondary" onClick={handleDeleteClose}>Cancel</Button>
                     <AsyncButton
                         buttonType="normal"
                         color="error"
@@ -314,7 +314,7 @@ storage:
                         </Stack>
                     </DialogContent>
                     <DialogActions>
-                        <Button onClick={handleEditClose} color="warning" variant="outlined">
+                        <Button onClick={handleEditClose} color="secondary" variant="outlined">
                             Cancel
                         </Button>
                         <AsyncButton
