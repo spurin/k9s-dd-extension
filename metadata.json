@@ -24,18 +24,12 @@
             "path": "/darwin/kubectl"
           },
           {
-            "path": "/darwin/helm"
-          },
-          {
             "path": "/darwin/vcluster"
           }
         ],
         "windows": [
           {
             "path": "/windows/kubectl.exe"
-          },
-          {
-            "path": "/windows/helm.exe"
           },
           {
             "path": "/windows/vcluster.exe"
@@ -47,9 +41,6 @@
           },
           {
             "path": "/linux/vcluster"
-          },
-          {
-            "path": "/linux/helm"
           }
         ]
       }
