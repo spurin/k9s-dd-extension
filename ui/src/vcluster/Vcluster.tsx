@@ -16,7 +16,7 @@ import {
 } from "../helper/cli";
 import {VClusterList} from "./List";
 import {VClusterCreate} from "./Create";
-import {Alert, AlertTitle, Box, CircularProgress, Stack} from "@mui/material";
+import {Alert, Box, CircularProgress, Stack} from "@mui/material";
 import Typography from '@mui/material/Typography';
 import {blueGrey} from "@mui/material/colors";
 
@@ -231,13 +231,10 @@ export const VCluster = () => {
             </React.Fragment>
         } else {
             component = <Box>
-                <Alert severity="error">
-                    <AlertTitle>Kubernetes failure</AlertTitle>
-                    <Typography variant="h2">
-                        Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the [<a
-                        href="https://docs.docker.com/desktop/kubernetes/">docker
-                        documentation</a>] on how to enable the Kubernetes server.
-                    </Typography>
+                <Alert severity="error" color="error">
+                    Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the <a
+                    href="https://docs.docker.com/desktop/kubernetes/">docker
+                    documentation</a> on how to enable the Kubernetes server.
                 </Alert>
             </Box>
         }
