@@ -28,7 +28,7 @@ jobs:
         uses: crazy-max/ghaction-docker-meta@v2
         with:
           images: |
-            loftsh/vcluster-dd-extension
+            loftsh/vcluster-docker-desktop
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
@@ -57,4 +57,4 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Sign Container Image
         run: |
-          COSIGN_EXPERIMENTAL=1 cosign sign --force loftsh/vcluster-dd-extension@${{ steps.docker_build.outputs.digest }}
+          COSIGN_EXPERIMENTAL=1 cosign sign --force loftsh/vcluster-docker-desktop@${{ steps.docker_build.outputs.digest }}
