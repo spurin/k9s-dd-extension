@@ -1,4 +1,4 @@
-IMAGE?=loftsh/vcluster-docker-desktop
+IMAGE?=loftsh/vcluster-dd-extension
 TAG?=0.0.1
 
 BUILDER=buildx-multi-arch

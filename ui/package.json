@@ -1,5 +1,5 @@
 {
-  "name": "@loftsh/vcluster-docker-desktop",
+  "name": "@loftsh/vcluster-dd-extension",
   "version": "0.0.1",
   "private": true,
   "dependencies": {
