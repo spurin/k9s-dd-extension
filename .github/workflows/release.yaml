@@ -25,13 +25,16 @@ jobs:
           echo "::set-output name=release_version::$RELEASE_VERSION"
       - name: Get Docker tags
         id: docker_meta
-        uses: crazy-max/ghaction-docker-meta@v2
+        uses: docker/metadata-action@v4
         with:
           images: |
-            loftsh/vcluster-docker-desktop
+            loftsh/vcluster-dd-extension
           tags: |
             type=semver,pattern={{version}}
             type=raw,value=latest
+          labels: |
+            org.opencontainers.image.title=vcluster
+            org.opencontainers.image.description=Manage your vclusters running on docker-desktop.
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v1
       - name: Set up Docker Buildx
@@ -57,4 +60,4 @@ jobs:
         run: echo ${{ steps.docker_build.outputs.digest }}
       - name: Sign Container Image
         run: |
-          COSIGN_EXPERIMENTAL=1 cosign sign --force loftsh/vcluster-docker-desktop@${{ steps.docker_build.outputs.digest }}
+          COSIGN_EXPERIMENTAL=1 cosign sign --force loftsh/vcluster-dd-extension@${{ steps.docker_build.outputs.digest }}
