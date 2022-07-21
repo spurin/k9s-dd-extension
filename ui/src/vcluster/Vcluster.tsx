@@ -1,7 +1,7 @@
 import React, {useEffect} from "react";
 import {createDockerDesktopClient} from '@docker/extension-api-client';
 import "../App.css";
-
+import ErrorIcon from '@mui/icons-material/Error';
 import {
     connectVCluster,
     createVCluster,
@@ -231,7 +231,9 @@ export const VCluster = () => {
             </React.Fragment>
         } else {
             component = <Box>
-                <Alert severity="error" color="error">
+                <Alert iconMapping={{
+                    error: <ErrorIcon fontSize="inherit" />,
+                }} severity="error" color="error">
                     Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the <a
                     href="https://docs.docker.com/desktop/kubernetes/">docker
                     documentation</a> on how to enable the Kubernetes server.
