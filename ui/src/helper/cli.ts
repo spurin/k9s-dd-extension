@@ -134,6 +134,52 @@ export const listNamespaces = async (ddClient: v1.DockerDesktopClient) => {
     return nsNameList;
 }
 
+// Lists all services from docker-desktop kubernetes
+export const listNodePortServices = async (ddClient: v1.DockerDesktopClient) => {
+    // kubectl get svc -A --no-headers -o custom-columns=":metadata.name, :metadata.namespace, :spec.type"  | grep NodePort
+    let output = await cli(ddClient, "kubectl", ["get", "services", "-A", "--no-headers", "-o", "custom-columns=\":metadata.name, :metadata.namespace, :spec.type\"", "|", "grep", "NodePort"]);
+    if (output?.stderr) {
+        console.log("[listServices] : ", output.stderr);
+        return [];
+    }
+
+    interface SvcObject {
+        name: string;
+        namespace: string;
+        type: string;
+    }
+
+    const svcObjects: SvcObject[] = []
+    output?.stdout.split("\n").forEach((svc: string) => {
+        const trimmed = svc.trim();
+        if (trimmed) {
+            const splitted = trimmed.split(" ").filter(entry => entry != "")
+            if (splitted.length === 3) {
+                let svcObject: SvcObject = {
+                    name: splitted[0].trim(),
+                    namespace: splitted[1].trim(),
+                    type: splitted[2].trim()
+                }
+                svcObjects.push(svcObject);
+            }
+        }
+    });
+    return svcObjects;
+}
+
+export const isNodePortServiceAvailableForVcluster = async (ddClient: v1.DockerDesktopClient, name: string, namespace: string) => {
+    let nodePortServices = await listNodePortServices(ddClient);
+    if (nodePortServices.length > 0) {
+        let found = nodePortServices.filter(nodePortService => {
+            return nodePortService.name === name && nodePortService.namespace === namespace;
+        });
+        if (found.length > 0) {
+            return true;
+        }
+    }
+    return false;
+}
+
 // Runs `vcluster disconnect` command on host and changes the context back to older context.
 // noinspection JSUnusedLocalSymbols
 export const disconnectVCluster = async (ddClient: v1.DockerDesktopClient, namespace: string, context: string) => {

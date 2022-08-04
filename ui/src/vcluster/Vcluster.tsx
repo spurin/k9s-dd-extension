@@ -8,6 +8,7 @@ import {
     deleteVCluster,
     disconnectVCluster,
     getCurrentK8sContext,
+    isNodePortServiceAvailableForVcluster,
     listNamespaces,
     listVClusters,
     pauseVCluster,
@@ -185,19 +186,23 @@ export const VCluster = () => {
     };
 
     const connectUIVC = async (name: string, namespace: string) => {
-        try {
-            const isConnected = await connectVCluster(ddClient, name, namespace);
-            if (isConnected) {
-                ddClient.desktopUI.toast.success("vcluster connected successfully");
-            } else {
-                ddClient.desktopUI.toast.error("vcluster connect failed");
+        const nodePortService = await isNodePortServiceAvailableForVcluster(ddClient, name, namespace)
+        if (!nodePortService) {
+            ddClient.desktopUI.toast.warning("Please use `vcluster connect` from terminal, as " + name + " doesn't have nodeport service enabled");
+        } else {
+            try {
+                const isConnected = await connectVCluster(ddClient, name, namespace);
+                if (isConnected) {
+                    ddClient.desktopUI.toast.success("vcluster connected successfully");
+                } else {
+                    ddClient.desktopUI.toast.error("vcluster connect failed");
+                }
+                await refreshData(setCurrentK8sContext, setVClusters, setNamespaces);
+            } catch (err) {
+                ddClient.desktopUI.toast.error("vcluster connect failed: " + JSON.stringify(err));
             }
-
-            await refreshData(setCurrentK8sContext, setVClusters, setNamespaces);
-        } catch (err) {
-            ddClient.desktopUI.toast.error("vcluster connect failed: " + JSON.stringify(err));
         }
-    };
+    }
 
     let component
     if (isLoading) {
@@ -232,7 +237,7 @@ export const VCluster = () => {
         } else {
             component = <Box>
                 <Alert iconMapping={{
-                    error: <ErrorIcon fontSize="inherit" />,
+                    error: <ErrorIcon fontSize="inherit"/>,
                 }} severity="error" color="error">
                     Seems like Kubernetes is not enabled in your Docker Desktop. Please take a look at the <a
                     href="https://docs.docker.com/desktop/kubernetes/">docker
