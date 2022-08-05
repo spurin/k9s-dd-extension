@@ -1,5 +1,5 @@
 {
-  "name": "@loftsh/vcluster-dd-extension",
+  "name": "@spurin/k9s-dd-extension",
   "version": "0.0.1",
   "private": true,
   "dependencies": {

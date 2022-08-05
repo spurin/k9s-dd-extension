@@ -1,18 +1,18 @@
 {
-  "icon": "vcluster.svg",
+  "icon": "k9s.svg",
   "vm": {
-    "image": "${DESKTOP_PLUGIN_IMAGE}",
+    "composefile": "docker-compose.yaml",
     "exposes": {
-      "socket": "vcluster-dd-extension.sock"
+      "socket": "k8s-dd-extension.sock"
     }
   },
   "ui": {
     "dashboard-tab": {
-      "title": "vcluster",
+      "title": "k9s",
       "src": "index.html",
       "root": "ui",
       "backend": {
-        "socket": "vcluster-dd-extension.sock"
+        "socket": "k8s-dd-extension.sock"
       }
     }
   },
@@ -22,25 +22,16 @@
         "darwin": [
           {
             "path": "/darwin/kubectl"
-          },
-          {
-            "path": "/darwin/vcluster"
           }
         ],
         "windows": [
           {
             "path": "/windows/kubectl.exe"
-          },
-          {
-            "path": "/windows/vcluster.exe"
           }
         ],
         "linux": [
           {
             "path": "/linux/kubectl"
-          },
-          {
-            "path": "/linux/vcluster"
           }
         ]
       }

@@ -1,4 +1,4 @@
-IMAGE?=loftsh/vcluster-dd-extension
+IMAGE?=spurin/k9s-dd-extension
 TAG?=0.0.1
 
 BUILDER=buildx-multi-arch

@@ -1,0 +1,28 @@
+services:
+  capture-kubeconfig:
+    image: ${DESKTOP_PLUGIN_IMAGE}
+    volumes:
+      - kubeconfig:/root/.kube:rw
+    healthcheck:
+      test: curl --unix-socket /run/guest-services/k8s-dd-extension.sock http:/x/y/z | grep "Not Found"
+      interval: 1s
+      retries: 100
+      start_period: 1s
+      timeout: 10s
+
+  k9s:
+    hostname: k9s
+    container_name: k9s
+    # Source: https://github.com/spurin/container-k9s-ttyd-kubectl
+    # Container: https://hub.docker.com/r/spurin/k9s-ttyd-kubectl
+    image: spurin/k9s-ttyd-kubectl
+    volumes:
+      - kubeconfig:/kubeconfig
+    ports:
+      - 35781:7681
+    depends_on:
+      capture-kubeconfig:
+        condition: service_healthy
+
+volumes:
+  kubeconfig:
