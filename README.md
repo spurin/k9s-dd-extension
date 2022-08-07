@@ -3,6 +3,8 @@
 This provides an extension integration with Docker Desktop to allow k9s
 quickly and easily through the Docker Desktop interface.
 
+<img src="assets/k9s.png" alt="k9s">
+
 ## Prerequisites
 
 In order to run this extension, you must have Docker Desktop 4.8.0 or later
@@ -64,7 +66,7 @@ This is done when the testers/release-engineers want to verify the functionality
 If you are making local changes and would like to try them out, you will need
 to follow these steps:
 
-1. From a terminal, navigate to `spurin-dd-extension` root directory.
+1. From a terminal, navigate to `k9s-dd-extension` root directory.
 2. Run the following command to build and install the local extension after the kubernetes and docker are running:
 
    ```sh
@@ -75,3 +77,11 @@ to follow these steps:
 From the Docker Dashboard you can now navigate to the Extensions section. It should now list *k9s* as one of the
 available extensions. Click on *k9s* from the list and you should be presented with the UI for managing the virtual
 clusters created on docker-desktop kubernetes.
+
+## Thanks!
+
+This extension wouldn't be possible without the amazing efforts of [loft](https://loft.sh/) and their open sourced [Vcluster Docker Desktop Extension](https://hub.docker.com/extensions/loftsh/vcluster-dd-extension).  The team at loft were able to solve a necessary problem, i.e. how to access a working kubeconfig that relates to the Docker Desktop in-built Kubernetes Server.  Around this, they also built a handy control loop in React/Typescript that checks whether or not Kubernetes is running.  This extension re-uses the control loops and adds a volume share to the kubeconfig file, therefore permitting access to other containers (in this case, k9s).
+
+<img src="assets/loft.jpeg" alt="loft">
+
+Great efforts Loft! 🚀
