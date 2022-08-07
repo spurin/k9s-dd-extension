@@ -75,8 +75,7 @@ to follow these steps:
 
 ### Navigate to extension
 From the Docker Dashboard you can now navigate to the Extensions section. It should now list *k9s* as one of the
-available extensions. Click on *k9s* from the list and you should be presented with the UI for managing the virtual
-clusters created on docker-desktop kubernetes.
+available extensions. Click on *k9s* from the list and you should be presented with the k9s UI, preconfigured with access to the docker-desktop kubernetes context.
 
 ## Thanks!
 
