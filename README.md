@@ -58,7 +58,7 @@ Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for k9s 
 #### Or Running unpublished extension
 This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
 
-`docker extension install spurin/k9s-dd-extension:0.0.7`
+`docker extension install spurin/k9s-dd-extension:0.0.1`
 
 #### Or Building and Installing extension
 If you are making local changes and would like to try them out, you will need
