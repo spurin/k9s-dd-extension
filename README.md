@@ -27,6 +27,8 @@ Development Recommendations:
 
 ### `Docker Extension` CLI Setup
 
+The `docker extension` cli is provided by default on the current versions of Docker Desktop.  If you're running an older version, see:
+
 https://docs.docker.com/desktop/extensions-sdk
 
 Note: The build steps assume that the Docker Extensions CLI has been installed.
@@ -51,16 +53,17 @@ In Docker Desktop,
 
 ### Three ways to run extension
 
+#### Running unpublished extension
+This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
+
+`docker extension install spurin/k9s-dd-extension:0.0.1`
+
 #### Running published extension
 The standard way to get the k9s extension for Docker Desktop is by using the Docker Marketplace. This will install
 the officially released version of the extension (should it be accepted upon the marketplace).
 
 Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for k9s -> Click on Install
 
-#### Or Running unpublished extension
-This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
-
-`docker extension install spurin/k9s-dd-extension:0.0.1`
 
 #### Or Building and Installing extension
 If you are making local changes and would like to try them out, you will need
