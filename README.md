@@ -71,7 +71,7 @@ If you are making local changes and would like to try them out, you will need
 to follow these steps:
 
 1. From a terminal, navigate to `k9s-dd-extension` root directory.
-2. Run the following command to build and install the local extension after the kubernetes and docker are running:
+2. Run the following command to build and install the local extension after kubernetes and docker are running:
 
    ```sh
    make build-install
