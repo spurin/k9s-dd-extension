@@ -27,6 +27,8 @@ Development Recommendations:
 
 ### `Docker Extension` CLI Setup
 
+The `docker extension` cli is provided by default on the current versions of Docker Desktop.  If you're running an older version you'll manually need to configure the `docker extension` cli, see:
+
 https://docs.docker.com/desktop/extensions-sdk
 
 Note: The build steps assume that the Docker Extensions CLI has been installed.
@@ -45,29 +47,31 @@ cp docker-extension ~/.docker/cli-plugins/
 ### Enable kubernetes and docker extensions
 In Docker Desktop,
 1.  Go to Preferences -> Kubernetes -> Check
-   "Enable kubernetes".
+   "Enable Kubernetes".
 2. Go to Preferences -> Extensions -> Check
    "Enable Docker Extensions".
 
 ### Three ways to run extension
 
+#### Running unpublished extension
+
+Users can run the command below to install the extension on their machines.
+
+`docker extension install spurin/k9s-dd-extension:0.0.1`
+
 #### Running published extension
-The standard way to get the k9s extension for Docker Desktop is by using the Docker Marketplace. This will install
-the officially released version of the extension (should it be accepted upon the marketplace).
+The standard way to get extensions for Docker Desktop is by using the Docker Marketplace. This will install
+officially released versions of the extension.  Should it be accepted upon the marketplace, the process is as follows -
 
 Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for k9s -> Click on Install
 
-#### Or Running unpublished extension
-This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
-
-`docker extension install spurin/k9s-dd-extension:0.0.1`
 
 #### Or Building and Installing extension
 If you are making local changes and would like to try them out, you will need
 to follow these steps:
 
 1. From a terminal, navigate to `k9s-dd-extension` root directory.
-2. Run the following command to build and install the local extension after the kubernetes and docker are running:
+2. Run the following command to build and install the local extension after kubernetes and docker are running:
 
    ```sh
    make build-install
@@ -75,8 +79,7 @@ to follow these steps:
 
 ### Navigate to extension
 From the Docker Dashboard you can now navigate to the Extensions section. It should now list *k9s* as one of the
-available extensions. Click on *k9s* from the list and you should be presented with the UI for managing the virtual
-clusters created on docker-desktop kubernetes.
+available extensions. Click on *k9s* from the list and you should be presented with the k9s UI, preconfigured with access to the docker-desktop kubernetes context.
 
 ## Thanks!
 
@@ -84,4 +87,4 @@ clusters created on docker-desktop kubernetes.
 
 This extension wouldn't be possible without the amazing efforts of [loft](https://loft.sh/) and their open sourced [Vcluster Docker Desktop Extension](https://hub.docker.com/extensions/loftsh/vcluster-dd-extension).  The team at loft were able to solve a necessary problem, i.e. how to access a working kubeconfig that relates to the Docker Desktop in-built Kubernetes Server.  Around this, they also built a handy control loop in React/Typescript that checks whether or not Kubernetes is running.  This extension re-uses the control loops and adds a volume share to the kubeconfig file, therefore permitting access to other containers (in this case, k9s).
 
-Great efforts Loft! 🚀
+Great efforts loft! 🚀
