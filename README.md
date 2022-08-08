@@ -27,7 +27,7 @@ Development Recommendations:
 
 ### `Docker Extension` CLI Setup
 
-The `docker extension` cli is provided by default on the current versions of Docker Desktop.  If you're running an older version, see:
+The `docker extension` cli is provided by default on the current versions of Docker Desktop.  If you're running an older version you'll manually need to configure the `docker extension` cli, see:
 
 https://docs.docker.com/desktop/extensions-sdk
 
@@ -47,20 +47,21 @@ cp docker-extension ~/.docker/cli-plugins/
 ### Enable kubernetes and docker extensions
 In Docker Desktop,
 1.  Go to Preferences -> Kubernetes -> Check
-   "Enable kubernetes".
+   "Enable Kubernetes".
 2. Go to Preferences -> Extensions -> Check
    "Enable Docker Extensions".
 
 ### Three ways to run extension
 
 #### Running unpublished extension
-This is done when the testers/release-engineers want to verify the functionality from unpublished version with docker image released. Users can fire below command to install the extension on their machines.
+
+Users can run the command below to install the extension on their machines.
 
 `docker extension install spurin/k9s-dd-extension:0.0.1`
 
 #### Running published extension
-The standard way to get the k9s extension for Docker Desktop is by using the Docker Marketplace. This will install
-the officially released version of the extension (should it be accepted upon the marketplace).
+The standard way to get extensions for Docker Desktop is by using the Docker Marketplace. This will install
+officially released versions of the extension.  Should it be accepted upon the marketplace, the process is as follows -
 
 Go to Dashboard -> Add Extensions -> Click on Marketplace tab -> Search for k9s -> Click on Install
 
@@ -86,4 +87,4 @@ available extensions. Click on *k9s* from the list and you should be presented w
 
 This extension wouldn't be possible without the amazing efforts of [loft](https://loft.sh/) and their open sourced [Vcluster Docker Desktop Extension](https://hub.docker.com/extensions/loftsh/vcluster-dd-extension).  The team at loft were able to solve a necessary problem, i.e. how to access a working kubeconfig that relates to the Docker Desktop in-built Kubernetes Server.  Around this, they also built a handy control loop in React/Typescript that checks whether or not Kubernetes is running.  This extension re-uses the control loops and adds a volume share to the kubeconfig file, therefore permitting access to other containers (in this case, k9s).
 
-Great efforts Loft! 🚀
+Great efforts loft! 🚀
