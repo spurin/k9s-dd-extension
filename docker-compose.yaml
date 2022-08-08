@@ -1,6 +1,7 @@
 services:
   capture-kubeconfig:
     image: ${DESKTOP_PLUGIN_IMAGE}
+    network_mode: "host"
     volumes:
       - kubeconfig:/root/.kube:rw
     healthcheck:
@@ -16,10 +17,13 @@ services:
     # Source: https://github.com/spurin/container-k9s-ttyd-kubectl
     # Container: https://hub.docker.com/r/spurin/k9s-ttyd-kubectl
     image: spurin/k9s-ttyd-kubectl
+    command: [ "/bin/ttyd", "-p", "35781", "sh",  "-c", "'/bin/k9s; exit 1'" ]
+    network_mode: "host"
     volumes:
       - kubeconfig:/kubeconfig
-    ports:
-      - 35781:7681
+#    ports:
+#      - "0.0.0.0:35781:35781"
+#      - 35781:7681
     depends_on:
       capture-kubeconfig:
         condition: service_healthy

@@ -15,12 +15,12 @@ const storeValuesFileInContainer = async (ddClient: v1.DockerDesktopClient, valu
     return ddClient.extension.vm?.service?.post("/store-values", {data: values});
 }
 
-// Gets docker-desktop kubeconfig file from local and save it in container's /root/.kube/config file-system.
+// Gets the kubeconfig file from local and save it in container's /root/.kube/config file-system.
 // We have to use the vm.service to call the post api to store the kubeconfig retrieved. Without post api in vm.service
 // all the combinations of commands fail
 export const updateDockerDesktopK8sKubeConfig = async (ddClient: v1.DockerDesktopClient) => {
     // kubectl config view --raw
-    let kubeConfig = await hostCli(ddClient, "kubectl", ["config", "view", "--raw", "--minify", "--context", DockerDesktop]);
+    let kubeConfig = await hostCli(ddClient, "kubectl", ["config", "view", "--raw", "--minify"]);
     if (kubeConfig?.stderr) {
         console.log("error", kubeConfig?.stderr);
         return false;
@@ -70,5 +70,5 @@ export const getContainerK8sContext = async (ddClient: v1.DockerDesktopClient) =
 // Retrieves kubectl cluster-info
 export const checkK8sConnection = async (ddClient: v1.DockerDesktopClient) => {
     // kubectl cluster-info
-    return await cli(ddClient, "kubectl", ["cluster-info"]);
+    return await cli(ddClient, "kubectl", ["--kubeconfig=/root/.kube/config", "cluster-info"]);
 }
