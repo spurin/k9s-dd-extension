@@ -57,7 +57,7 @@ In Docker Desktop,
 
 Users can run the command below to install the extension on their machines.
 
-`docker extension install spurin/k9s-dd-extension:0.0.1`
+`docker extension install spurin/k9s-dd-extension:latest`
 
 #### Running published extension
 The standard way to get extensions for Docker Desktop is by using the Docker Marketplace. This will install
